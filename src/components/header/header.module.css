@@ -1,0 +1,9 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.logoWrapper {
+  width: 100px;
+}
+
