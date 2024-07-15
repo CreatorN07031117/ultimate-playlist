@@ -14,3 +14,27 @@ const UserType = {
 } as const;
 
 export type UserType = typeof UserType[keyof typeof UserType];
+
+export const StoreSlice ={
+  siteData: 'SITE_DATA',
+  siteProcess: 'SITE_PROCESS',
+  userProcess: 'USER_PROCESS',
+} as const;
+
+export type StoreSlice = typeof StoreSlice[keyof typeof StoreSlice];
+
+export const SubmitStatus = {
+  still: 'STILL',
+  pending: 'PENDING',
+  fullfilled: 'FULLFILLED',
+  rejected:'REJECTED',
+} as const;
+
+export type SubmitStatus = typeof SubmitStatus[keyof typeof SubmitStatus];
+
+export const Sorting = {
+  releaseDateIncrease: 'Release: low to high',
+  releaseDateDecrease: 'Release: high to low',
+} as const;
+
+export type Sorting = typeof Sorting[keyof typeof Sorting];

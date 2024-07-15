@@ -1,0 +1,59 @@
+.albumCard {
+
+  @media(min-width: 1200px) {
+    overflow: hidden;
+    width: 250px;
+    background-color: #f0f8ff;
+    border-radius: 15px;
+  }
+}
+
+.albumCard:hover {
+  @media(min-width: 1200px) {
+    scale: 1.05;
+    background-color: #d3e9fc;
+  }
+}
+
+
+.albumCoverWrapper {
+  @media(min-width: 1200px) {
+    position: relative;
+    width: 250px;
+    height: 250px;
+  }
+}
+
+.albumCover {
+
+  @media(min-width: 1200px) {
+    width: 250px;
+    height: 250px;
+  }
+}
+
+.title {
+  color: #213547;
+
+  @media(min-width: 1200px) {
+    margin: 20px 20px 5px;
+    font-size: 25px;
+    line-height: 1.1;
+  }
+}
+
+.musicianWrapper {
+  color: rgba(45, 49, 63, 0.7);
+
+  @media(min-width: 1200px) {
+    margin: 0 20px;
+  }
+}
+
+.albumInfoWrapper {
+  display: flex;
+  justify-content: space-between;
+  margin: 7px 20px 20px;
+  color: #213547;
+  font-weight: 300;
+}

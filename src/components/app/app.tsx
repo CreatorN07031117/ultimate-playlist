@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import Catalog from '../catalog.page/catalog';
 import NewAlbum from '../new-album.page/new-album';
@@ -11,19 +12,18 @@ import { Header } from '../header/header';
 import PrivateRoute from '../private-route/private-route';
 import { AppRoute, AuthorizationStatus } from '../const';
 
-import fetchData from '../../base-initial';
+import type { Album as AlbumType} from '../../types/types';
+import {fetchData, signUp} from '../../base-initial';
 
 import './app.module.css'
 
 const App = (): JSX.Element => {
 
-  fetchData();
-
   return (
   <BrowserRouter>
     <Routes>
       <Route element={<Header />}>
-        <Route index element={<Catalog />} />
+        <Route index element={<Catalog/>} />
         <Route path={`${AppRoute.Album}/:id`} element={<Album />} />
         <Route
           path={`${AppRoute.Album}/:id${AppRoute.Edit}`}

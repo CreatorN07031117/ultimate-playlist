@@ -1,3 +1,4 @@
+import store from "../store";
 import type { AlbumFormat, UserType } from "./enums";
 
 export type Album = {
@@ -5,7 +6,7 @@ export type Album = {
   name: string;
   musician: string;
   genres: string[];
-  releasDate: Date;
+  releaseDate: Date;
   qtySongs: number;
   coverImg: string;
   description: string[];
@@ -13,9 +14,17 @@ export type Album = {
   isFavorite?: boolean;
 };
 
-export type User = {
+export type UserData = {
   name: string;
   type: UserType;
   favorites: string[];
 }
+
+export type UserSingIn = {
+  email: string;
+  password: string;
+}
+
+export type AppDispatch = typeof store.dispatch;
+
 

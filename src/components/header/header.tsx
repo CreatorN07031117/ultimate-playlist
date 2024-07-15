@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import { AppRoute } from '../const';
 import type { User } from '../../types/types';
 import s from './header.module.css';
@@ -17,6 +17,7 @@ export const Header = () => {
   const isAuthorized = true;
 
   return (
+    <>
       <header className={s.header}>
         <div className={s.headerLogo}>
           Лого
@@ -55,5 +56,7 @@ export const Header = () => {
           </ul>
         </nav>
       </header>
+      <Outlet />
+    </>
   )
 }
