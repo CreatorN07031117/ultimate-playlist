@@ -1,44 +1,73 @@
 .albumCard {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  width: 100vw;
+  padding: 20px 20px 25px;
 
   @media(min-width: 1200px) {
     overflow: hidden;
+    flex-direction: column;
     width: 250px;
+    padding: 0;
     background-color: #f0f8ff;
     border-radius: 15px;
   }
 }
 
 .albumCard:hover {
+  background-color: #d3e9fc;
   @media(min-width: 1200px) {
-    scale: 1.05;
-    background-color: #d3e9fc;
+    scale: 1.02;
   }
 }
-
-
 .albumCoverWrapper {
+  position: relative;
+  max-width: 200px;
+  max-height: 200px;
+
   @media(min-width: 1200px) {
-    position: relative;
-    width: 250px;
-    height: 250px;
+    max-width: 250px;
+    max-height: 250px;
   }
 }
 
 .albumCover {
+  min-width: 120px;
+  min-height: 120px;
+  width: 40vw;
+  height: 40vw;
+  max-width: 200px;
+  max-height: 200px;
 
   @media(min-width: 1200px) {
+    max-width: 250px;
+    max-height: 250px;
     width: 250px;
     height: 250px;
   }
 }
 
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  height: inherit;
+
+  @media(min-width: 1200px) {
+    display: block;
+  }
+}
+
 .title {
+  margin: 0 0 5px;
   color: #213547;
+  font-size: 23px;
+  line-height: 1.1;
 
   @media(min-width: 1200px) {
     margin: 20px 20px 5px;
     font-size: 25px;
-    line-height: 1.1;
   }
 }
 
@@ -53,7 +82,23 @@
 .albumInfoWrapper {
   display: flex;
   justify-content: space-between;
-  margin: 7px 20px 20px;
+  max-width: 300px;
+  margin: 10px 0;
   color: #213547;
   font-weight: 300;
+
+  @media(min-width: 1200px) {
+    margin: 7px 20px 20px;
+  }
+}
+
+.genresWrapper {
+  display: flex;
+  align-self: flex-end;
+
+  @media(min-width: 1200px) {
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 20px;
+  }
 }

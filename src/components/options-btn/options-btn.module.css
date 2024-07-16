@@ -1,13 +1,17 @@
 .options {
+  position: absolute;
+  top: 7px;
+  left: 7px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 10px;
+  gap: 7px;
 
   @media(min-width: 1200px) {
     position: absolute;
     top: 10px;
     right: 10px;
+    justify-content: center;
+    gap: 10px;
   }
 }
 
@@ -17,36 +21,46 @@ button.deleteAlbumBtn {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 20px;
+  height: 30px;   
+  border-radius: 5px;
   background-color: rgba(0, 0, 0, 0.3);
   border: none;
-  
+
   @media(min-width: 1200px) {
     width: 25px;
-    height: 35px;
-    border-radius: 5px;
+    height: 35px;   
+    
   }
 }
 
 button.favoriteBtn:hover ,
 button.editAlbumBtn:hover ,
 button.deleteAlbumBtn:hover {
-
-  @media(min-width: 1200px) {
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.5);
-    border: none;
-  }
 }
 
 .btnIcon {
-  width: 25px;
-  height: 35px;
+  width: 20px;
+  height: 30px;
   vertical-align: inherit;
   color: rgba(255, 255, 255, 0.6);
-  font-size: 18px;
+  font-size: 15px;
+
+  @media(min-width: 1200px) {
+    width: 25px;
+    height: 35px;
+    vertical-align: inherit;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 18px;
+  }
 }
 
 .btnIcon:hover {
-  scale: 1.15;
   color: rgba(255, 255, 255, 1);
+
+  @media(min-width: 1200px) {
+    scale: 1.15;
+  }
 }
