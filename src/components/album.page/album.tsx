@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { Tag } from "antd";
 import { HeartOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import { OptionsBtn } from '../options-btn/options-btn';
@@ -32,7 +33,7 @@ const Album = () => {
   const clickDeleteAlbumBtnHandler = () => {};
 
   return (
-  <article className={s.albumWrapper}>
+    <article className={s.albumWrapper}>
       <div className={s.wrapper}>
         <div className={s.contentWrapper}>
           <div className={s.musician}>{album?.musician}</div>
@@ -46,13 +47,14 @@ const Album = () => {
               <p>{paragraph}</p>
             ))}
           </div>
+          <div className={s.genresWrapper}>{album?.genres.map((genre) => (<Tag color={'rgb(91, 106, 109)'}>{genre}</Tag>))}</div>
         </div>
         <div className={s.albumCoverWrapper}>
-          <OptionsBtn />
-          <img className={s.albumCover} src={album?.coverImg} alt={`Album's cover "${album?.name}"`} width="400" height="400"/>
+          <OptionsBtn option='album' />
+          <img className={s.albumCover} src={album?.coverImg} alt={`Album's cover "${album?.name}"`} />
         </div>
       </div>
-  </article>
+    </article>
 )}
 
 export default Album;

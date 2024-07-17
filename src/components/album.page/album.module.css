@@ -8,6 +8,8 @@
 .wrapper {
   display: flex;
   flex-direction: column;
+  position: relative;
+  padding: 20px 20px 30px;
 
   @media(min-width: 1200px) {
     flex-direction: row;
@@ -23,8 +25,6 @@
 
 .albumCoverWrapper {
   width: 100%;
-  max-width: 400px;
-  max-height: 400px;
 
   @media(min-width: 1200px) {
     position: relative;
@@ -45,7 +45,12 @@
 }
 
 .albumTitle {
+  width: calc(100vw - 50px);
   margin-top: 0;
+
+  @media(min-width: 1200px) {
+    width: 100%;
+  }
 }
 
 .musician {

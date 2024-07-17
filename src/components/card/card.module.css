@@ -11,6 +11,7 @@
     flex-direction: column;
     width: 250px;
     padding: 0;
+    height: 100%;
     background-color: #f0f8ff;
     border-radius: 15px;
   }
@@ -52,10 +53,12 @@
 .contentWrapper {
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: inherit;
 
   @media(min-width: 1200px) {
     display: block;
+    height: 100%;
   }
 }
 
@@ -82,13 +85,14 @@
 .albumInfoWrapper {
   display: flex;
   justify-content: space-between;
-  max-width: 300px;
+  max-width: 200px;
   margin: 10px 0;
   color: #213547;
   font-weight: 300;
 
   @media(min-width: 1200px) {
-    margin: 7px 20px 20px;
+    margin: 7px 20px 25px;
+    max-width: auto;
   }
 }
 
@@ -96,9 +100,14 @@
   display: flex;
   align-self: flex-end;
 
-  @media(min-width: 1200px) {
+  @media(min-width: 469px) {
     flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 20px;
+    align-self: flex-start;
+    gap: 3px;
+    margin-top: auto;
+  }
+
+  @media(min-width: 1200px) {
+    margin: 50px 20px 30px;
   }
 }
