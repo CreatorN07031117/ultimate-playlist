@@ -7,3 +7,4 @@ import { StoreSlice } from '../types/enums';
 export const rootReducer = combineReducers({
   [StoreSlice.siteData]: siteData.reducer,
 });
+

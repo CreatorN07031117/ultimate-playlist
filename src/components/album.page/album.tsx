@@ -42,6 +42,7 @@ const Album = () => {
             <div className={s.songsInfo}><b>Duration:</b> {album?.qtySongs} songs</div>
             <div className={s.releaseYear}><b>Release date:</b> {formatDate(new Date(album?.releaseDate))}</div>
           </div>
+          <div className={s.albumFormatWrapper}><b>Available formats:</b> {album?.format.map((format) => (<Tag>{format}</Tag>))}</div>
           <div className={s.descriptionWrapper}>
             {album?.description.map((paragraph) => (
               <p>{paragraph}</p>

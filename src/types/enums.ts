@@ -18,7 +18,7 @@ export type UserType = typeof UserType[keyof typeof UserType];
 export const StoreSlice ={
   siteData: 'SITE_DATA',
   siteProcess: 'SITE_PROCESS',
-  userProcess: 'USER_PROCESS',
+  userData: 'USER_DATA',
 } as const;
 
 export type StoreSlice = typeof StoreSlice[keyof typeof StoreSlice];
@@ -38,3 +38,11 @@ export const Sorting = {
 } as const;
 
 export type Sorting = typeof Sorting[keyof typeof Sorting];
+
+export const AuthorizationStatus = {
+  auth: 'AUTH',
+  noAuth: 'NO_AUTH',
+  unknown: 'UNKNOWN',
+} as const;
+
+export type AuthorizationStatus = typeof AuthorizationStatus[keyof typeof AuthorizationStatus];

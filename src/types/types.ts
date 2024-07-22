@@ -16,6 +16,7 @@ export type Album = {
 
 export type UserData = {
   name: string;
+  email: string;
   type: UserType;
   favorites: string[];
 }

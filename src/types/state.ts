@@ -1,6 +1,6 @@
 import store from '../store';
 
-import type { Album, UserSingIn } from './types';
+import type { Album, UserData } from './types';
 import type { Sorting } from './enums';
 import { AuthorizationStatus } from '../components/const';
 
@@ -18,9 +18,9 @@ export type SiteProcess = {
     sorting: Sorting;
 }
 
-export type UserProcess = {
+export type UserData = {
     authorizationStatus: AuthorizationStatus;
-    user: UserSingIn['email'];
+    user: UserData | null;
 }
 
 export type State = ReturnType<typeof store.getState>;

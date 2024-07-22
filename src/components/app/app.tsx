@@ -12,9 +12,6 @@ import { Header } from '../header/header';
 import PrivateRoute from '../private-route/private-route';
 import { AppRoute, AuthorizationStatus } from '../const';
 
-import type { Album as AlbumType} from '../../types/types';
-import {fetchData, signUp} from '../../base-initial';
-
 import './app.module.css'
 
 const App = (): JSX.Element => {
@@ -23,7 +20,7 @@ const App = (): JSX.Element => {
   <BrowserRouter>
     <Routes>
       <Route element={<Header />}>
-        <Route index element={<Catalog/>} />
+        <Route index element={<Catalog />} />
         <Route path={`${AppRoute.Album}/:id`} element={<Album />} />
         <Route
           path={`${AppRoute.Album}/:id${AppRoute.Edit}`}
@@ -52,15 +49,13 @@ const App = (): JSX.Element => {
         <Route
           path={AppRoute.Login}
           element={
-            <PrivateRoute restrictedFor={AuthorizationStatus.Auth} redirectTo={AppRoute.Root}>
               <Login />
-            </PrivateRoute>
           }
         />
         <Route
           path={AppRoute.Register}
           element={
-            <PrivateRoute restrictedFor={AuthorizationStatus.Auth} redirectTo={AppRoute.Root}>
+            <PrivateRoute restrictedFor={AuthorizationStatus.NoAuth} redirectTo={AppRoute.Root}>
               <Register />
             </PrivateRoute>
           }

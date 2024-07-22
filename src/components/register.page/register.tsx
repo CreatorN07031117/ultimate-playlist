@@ -1,61 +1,75 @@
 import * as React from 'react';
+import type { FormEvent, MouseEvent, ChangeEvent } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Input, Form, Button } from "antd";
+import { EyeInvisibleOutlined, EyeTwoTone, FireFilled, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { registerUser } from '../../store/actions';
 import s from './register.module.css';
 
-const Register = (): JSX.Element => {
+import { AppDispatch } from '../../types/state';
 
-  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+
+const Register = (): JSX.Element => {
+  const [form] = Form.useForm();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleFormSubmit = (values) => {
+    console.log(values);
+
+    dispatch(registerUser(values));
   };
 
+ 
   return (
   <main>
-    <div>
-      <section>
-        <h1>Sign up</h1>
-        <form action="#" method="post" onSubmit={handleFormSubmit}>
-            <div className="login__input-wrapper form__input-wrapper">
+    <div className={s.registerWrapper}>
+      <section className={s.registerSection}>
+        <h1 className={s.userFormTitle}>Sign up</h1>
+        <Form form={form} onFinish={handleFormSubmit}>
+            
               <label className="visually-hidden">Name</label>
-              <input
-                className="login__input form__input"
-                type="text"
-                name="name"
-                placeholder="Name"
+              <Form.Item name="name">
+              <Input
+                size="large"
+                prefix={<UserOutlined />}
+                placeholder="Your name"
                 required
                 minLength={1}
-                maxLength={15}
+                maxLength={30}
               />
-            </div>
-            <div className="">
+            </Form.Item>
+            
               <label className="visually-hidden">E-mail</label>
-              <input
-                className=""
-                type="email"
-                name="email"
-                placeholder="Email"
+              <Form.Item name="email">
+              <Input
+                size="large"
+                prefix={<MailOutlined />}
+                placeholder="Your Email"
                 required
               />
-            </div>
-            <div className="">
+            </Form.Item>
               <label className="visually-hidden">Password</label>
-              <input
-                className=""
-                type="password"
-                name="password"
-                placeholder="Password"
+              <Form.Item name="password">
+              <Input.Password
+                size="large"
+                placeholder="input password"
+                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                 required
                 minLength={6}
                 maxLength={12}
               />
-            </div>
-            <button
-              className="login__submit form__submit button"
-              type="submit"
+            </Form.Item>
+            <Button
+              className={s.button}
+              htmlType="submit"
             >
-                Sign up
-            </button>
-          </form>
-        </section>
-      </div>
-    </main> 
+              Sign up
+            </Button>
+        </Form>
+      </section>
+    </div>
+  </main> 
 )}
 
 export default Register;

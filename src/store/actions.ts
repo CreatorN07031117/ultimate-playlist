@@ -1,6 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import type { Album  } from '../types/types';
+
+import { adaptUserDataToClient } from '../adapters/adapters-to-client';
+import type { Album, UserData  } from '../types/types';
+import { CreateUserDTO } from '../adapters/user.dto';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -36,5 +39,28 @@ export const fetchAlbumById = createAsyncThunk<Album, string, AsyncThunkConfig>(
 
     return data[0];
   }
+);
+
+export const registerUser = createAsyncThunk<UserData, {email: string, password: string, name: string}, AsyncThunkConfig>(
+  'users/signUp',
+  async ({email, password, name}) => {
+        const { data, error} = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              username: name,
+              userType: 'editor',
+              favorites: [],
+            }
+        }});
+    
+        if (error) {
+          throw error;
+        }
+    
+        return adaptUserDataToClient(data.user?.user_metadata as CreateUserDTO);
+      }
+
 );
 

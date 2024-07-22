@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Album, UserSingIn, User } from './types/types';
 
-const supabaseUrl = 'https://nfejynuraifmrtmngcaa.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5mZWp5bnVyYWlmbXJ0bW5nY2FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAzMzA3OTcsImV4cCI6MjAzNTkwNjc5N30.a-itaS0FsOtMkeXV_vP0q5_kKdBJ8qshjanq8pSuzSg';
+const supabaseUrl = '';
+const supabaseAnonKey = '';
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 

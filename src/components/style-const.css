@@ -1,0 +1,17 @@
+:root {
+  --color-background: #f0f8ff;
+  --color-background-hover: #d3e9fc;
+  --secondary: rgb(91, 106, 109);
+  --invert-text-color: #ffffff;
+
+  --tablet-width: 820px;
+  --desktop-width: 1200px;
+}
+
+:root .darkTheme {
+  color: rgb(255, 255, 255);
+  --color-background: #282a36;
+  --color-background-hover: #3d484c;
+  --secondary: #9eabbc;
+  --invert-text-color: #000000;
+}
