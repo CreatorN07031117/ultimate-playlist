@@ -1,4 +1,4 @@
-const AlbumFormat = {
+export const AlbumFormat = {
   cd: 'cd',
   vinyl: 'vinyl',
   digital: 'digital',

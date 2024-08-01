@@ -16,7 +16,7 @@ export const Card = ({album}: Props) => {
     <article className={s.albumCard}>
       <Link to={`/album/${album.id}`}>
         <div className={s.albumCoverWrapper}>
-          <OptionsBtn />
+          <OptionsBtn albumId={album.id}/>
           <img className={s.albumCover} src={album.coverImg} alt={`Album's cover "${album.name}"`} width="200" height="200" />
         </div>
       </Link>

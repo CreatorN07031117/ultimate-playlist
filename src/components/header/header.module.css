@@ -1,9 +1,26 @@
 .header {
   display: flex;
   justify-content: space-between;
+  padding: 20px 20px;
 }
 
 .logoWrapper {
-  width: 100px;
+  width: 100%;
 }
 
+
+.headerNavList {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  list-style-type: none;
+}
+
+.navItem a {
+  color: #213547;
+  font-weight: 600;
+}
+
+.userName {
+  padding-left: 7px;
+}

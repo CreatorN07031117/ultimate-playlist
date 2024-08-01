@@ -13,6 +13,9 @@ export const getFavoriteAlbums = ({ [StoreSlice.siteData]: SITE_DATA}: State): A
 export const getIsAlbumLoading = ({ [StoreSlice.siteData]: SITE_DATA }: State): boolean => SITE_DATA.isAlbumsLoading;
 export const getAlbum = ({ [StoreSlice.siteData]: SITE_DATA }: State): Album | null => SITE_DATA.album;
 
+export const getGenres = ({ [StoreSlice.siteData]: SITE_DATA }: State ): string[] => SITE_DATA.genres;
+export const getIsGenresLoading = ({ [StoreSlice.siteData]: SITE_DATA }: State ): boolean => SITE_DATA.isGenresLoading;
+
 export const selectOffers = createSelector(
   [getAlbums],
   (albums) => albums

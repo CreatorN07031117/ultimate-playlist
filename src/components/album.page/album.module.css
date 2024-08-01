@@ -1,5 +1,5 @@
 .albumWrapper {
-  width: 100vw;
+  width: 95vw;
   background-color: transparent;
   border: none;
   border-radius: 0%;
@@ -20,6 +20,15 @@
     margin: 0 auto;
     background-color: aliceblue;
     border-radius: 10px;
+  }
+}
+
+.genresWrapper {
+
+  margin-bottom: 10px;
+
+  @media(min-width: 1200px) {
+    margin-bottom: 0;
   }
 }
 

@@ -28,10 +28,6 @@ const Album = () => {
 
   const album = useSelector((state:State) => state.SITE_DATA.album);
 
-  const clickFavoriteBtnHandler = () => {};
-  const clickEditAlbumBtnHandler = () => {};
-  const clickDeleteAlbumBtnHandler = () => {};
-
   return (
     <article className={s.albumWrapper}>
       <div className={s.wrapper}>
@@ -51,7 +47,7 @@ const Album = () => {
           <div className={s.genresWrapper}>{album?.genres.map((genre) => (<Tag color={'rgb(91, 106, 109)'}>{genre}</Tag>))}</div>
         </div>
         <div className={s.albumCoverWrapper}>
-          <OptionsBtn option='album' />
+          <OptionsBtn option='album' albumId={album?.id as string}/>
           <img className={s.albumCover} src={album?.coverImg} alt={`Album's cover "${album?.name}"`} />
         </div>
       </div>

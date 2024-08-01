@@ -6,6 +6,8 @@ import { AuthorizationStatus } from '../components/const';
 
 
 export type SiteData = {
+    genres: string[];
+    isGenresLoading: boolean;
     albums: Album[];
     isAlbumsLoading: boolean;
     album: Album | null;
@@ -18,7 +20,7 @@ export type SiteProcess = {
     sorting: Sorting;
 }
 
-export type UserData = {
+export type User = {
     authorizationStatus: AuthorizationStatus;
     user: UserData | null;
 }

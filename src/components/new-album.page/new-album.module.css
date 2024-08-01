@@ -1,0 +1,20 @@
+@import url('../style-const.css');
+
+.root {
+  width: 95vw;
+  box-sizing: border-box;
+}
+
+.newAlbumWrapper {
+  padding: 20px 20px 25px;
+  background-color: var(--color-background);
+  box-sizing: border-box;
+
+  @media(min-width: 1200px) {
+    width: 1000px;
+    margin: 0 auto;
+    padding: 30px 30px 40px;
+    border-radius: 10px;
+  }
+}
+

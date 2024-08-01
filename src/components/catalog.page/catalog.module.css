@@ -1,5 +1,5 @@
 .catalogWrapper {
-  width: 100vw;
+  width: 95vw;
 
   @media(min-width: 1200px) {
     display: flex;

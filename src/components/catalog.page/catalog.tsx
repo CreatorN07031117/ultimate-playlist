@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import React, {useEffect} from 'react';
+import { TypedUseSelectorHook, useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { Card } from '../card/card';
 import { getAlbums } from '../../store/site-data/selectors';
 import type { Album, AppDispatch } from '../../types/types';
@@ -8,23 +8,9 @@ import s from './catalog.module.css';
 
 
 const Catalog = (): JSX.Element => {
-  //const dispatch = useDispatch<AppDispatch>();
   const useAppSelector: TypedUseSelectorHook<State> = useSelector;
-  //const isAlbumsLoading = useAppSelector(getIsAlbumsLoading);
-  const isAlbumsLoading = false;
-  const albums = useSelector((state:State) => state.SITE_DATA.albums);
- 
-  //const isEmpty = albums.length === 0;
-
-  /*const handleCardMouseEnter = () => {
-
-  };
-
-  const handleCardMouseLeave = () => {
-
-  };*/
-
-
+  const isAlbumsLoading = useSelector((state: State) => state.SITE_DATA.isAlbumsLoading);
+  const albums = useSelector((state:State) => state.SITE_DATA.albums, shallowEqual);
 
   if (isAlbumsLoading) {
     return <div>Loading...</div>

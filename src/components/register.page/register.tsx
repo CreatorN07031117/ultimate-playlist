@@ -1,9 +1,8 @@
 import * as React from 'react';
-import type { FormEvent, MouseEvent, ChangeEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Input, Form, Button } from "antd";
-import { EyeInvisibleOutlined, EyeTwoTone, FireFilled, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { EyeInvisibleOutlined, EyeTwoTone, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { registerUser } from '../../store/actions';
 import s from './register.module.css';
 
@@ -27,9 +26,8 @@ const Register = (): JSX.Element => {
       <section className={s.registerSection}>
         <h1 className={s.userFormTitle}>Sign up</h1>
         <Form form={form} onFinish={handleFormSubmit}>
-            
-              <label className="visually-hidden">Name</label>
-              <Form.Item name="name">
+          <label className="visually-hidden">Name</label>
+            <Form.Item name="name">
               <Input
                 size="large"
                 prefix={<UserOutlined />}
@@ -39,9 +37,8 @@ const Register = (): JSX.Element => {
                 maxLength={30}
               />
             </Form.Item>
-            
-              <label className="visually-hidden">E-mail</label>
-              <Form.Item name="email">
+            <label className="visually-hidden">E-mail</label>
+            <Form.Item name="email">
               <Input
                 size="large"
                 prefix={<MailOutlined />}
@@ -49,8 +46,8 @@ const Register = (): JSX.Element => {
                 required
               />
             </Form.Item>
-              <label className="visually-hidden">Password</label>
-              <Form.Item name="password">
+            <label className="visually-hidden">Password</label>
+            <Form.Item name="password">
               <Input.Password
                 size="large"
                 placeholder="input password"

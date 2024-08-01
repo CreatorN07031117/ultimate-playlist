@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { UserData } from '../../types/state';
+import type { User } from '../../types/state';
 import { registerUser } from '../actions';
 import { AuthorizationStatus, StoreSlice } from '../../types/enums';
 
-const initialState: UserData = {
+const initialState: User = {
   authorizationStatus: AuthorizationStatus.unknown,
   user: null
 };

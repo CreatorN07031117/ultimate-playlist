@@ -1,5 +1,6 @@
 .options {
   position: absolute;
+  z-index: 2;
   top: 7px;
   left: 7px;
   display: flex;

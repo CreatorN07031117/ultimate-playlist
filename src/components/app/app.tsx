@@ -32,11 +32,7 @@ const App = (): JSX.Element => {
         />
         <Route
           path={AppRoute.Add}
-          element={
-            <PrivateRoute restrictedFor={AuthorizationStatus.NoAuth} redirectTo={AppRoute.Login}>
-              <NewAlbum />
-            </PrivateRoute>
-          }
+          element={<NewAlbum />}
         />
         <Route
           path={AppRoute.Favorites}
@@ -54,14 +50,10 @@ const App = (): JSX.Element => {
         />
         <Route
           path={AppRoute.Register}
-          element={
-            <PrivateRoute restrictedFor={AuthorizationStatus.NoAuth} redirectTo={AppRoute.Root}>
-              <Register />
-            </PrivateRoute>
-          }
+          element={<Register />}
         />
+        <Route path="*" element={<NotFound />} />
       </Route>
-      <Route path="*" element={<NotFound />} />
     </Routes>
   </BrowserRouter>
 )};

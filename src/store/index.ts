@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { rootReducer } from './root-reducer';
-import { fetchAlbums } from './actions';
+import { fetchAlbums, fetchGenres } from './actions';
 import history from '../history';
 
 const store = configureStore({
@@ -15,5 +15,6 @@ const store = configureStore({
   }),
 });
 
+store.dispatch(fetchGenres());
 store.dispatch(fetchAlbums());
 export default store;
