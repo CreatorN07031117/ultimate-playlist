@@ -1,10 +1,12 @@
 
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { siteData } from './site-data/site-data';
+import { siteProcess } from './site-process/site-process';
+import { userProcess } from './user-data/user-data';
 import { StoreSlice } from '../types/enums';
 
 export const rootReducer = combineReducers({
-  [StoreSlice.siteData]: siteData.reducer,
+  [StoreSlice.siteProcess]: siteProcess.reducer,
+  [StoreSlice.userData]: userProcess.reducer,
 });
 

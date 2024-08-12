@@ -1,3 +1,5 @@
+export const ALBUMS_PER_PAGE = 24;
+
 export const AppRoute = {
   Root: '/',
   Login: '/login',
@@ -18,3 +20,5 @@ export const AuthorizationStatus = {
 } as const;
 
 export type AuthorizationStatus = typeof AuthorizationStatus[keyof typeof AuthorizationStatus];
+
+

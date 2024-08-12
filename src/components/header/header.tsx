@@ -1,25 +1,24 @@
 import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, Outlet } from 'react-router-dom';
 import {UserOutlined} from '@ant-design/icons';
-import { AppRoute } from '../const';
-import type { User } from '../../types/types';
+
+import { AppRoute } from '../../const';
+import type { AppDispatch, State, User } from '../../types/state';
 import logo from './logo.png'
 import s from './header.module.css';
 
+
 export const Header = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const user: User = useSelector((state:State) => state.USER_DATA);
 
   /* Заменяется на данные */
-  const user: User = {
-    name: "John Doe",
-    type: 'user',
-    favorites: [],
-  }
-
-  /* Заменяется на данные */
-  const isAuthorized = true;
+  const isAuthorized = user.authorizationStatus;
 
   return (
     <>
+      {console.log(user)}
       <header className={s.header}>
         <div className={s.headerLogo}>
           <Link to="/">
@@ -28,7 +27,7 @@ export const Header = () => {
         </div>
         <nav className={s.headerNavWrapper}>
           <ul className={s.headerNavList}>
-            {isAuthorized? (
+            {isAuthorized === 'AUTH' ? (
               <>
               <li className={s.navItem}>
                 <Link className={s.navLink} to={AppRoute.Add}>
@@ -42,7 +41,7 @@ export const Header = () => {
               </li>
               <li className={s.navItem}>
                 <UserOutlined />
-                <span className={s.userName}>{user.name}</span>
+                <span className={s.userName}>{user.user?.name}</span>
               </li>
               <li className={s.navItem}>
                 Log out

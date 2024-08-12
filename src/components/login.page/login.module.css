@@ -1,0 +1,39 @@
+@import url('../style-const.css');
+
+.loginWrapper {
+  width: 100vw;
+  box-sizing: border-box;
+}
+
+.loginSection {
+  padding: 20px 20px 25px;
+  background-color: var(--color-background);
+
+  @media(min-width: 1200px) {
+    width: 1000px;
+    margin: 0 auto;
+    padding: 30px 30px 40px;
+    border-radius: 10px;
+  }
+}
+
+.formWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  @media(min-width: 1200px) {
+    width: 400px;
+  }
+}
+
+.userFormTitle {
+  margin-top: 0;
+}
+
+.button {
+  margin: 15px 0 10px;
+  color: var(--invert-text-color);
+  background-color: var(--secondary);
+}
+

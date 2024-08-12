@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Input, Form, Button } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { registerUser } from '../../store/actions';
@@ -12,11 +12,11 @@ import { AppDispatch } from '../../types/state';
 const Register = (): JSX.Element => {
   const [form] = Form.useForm();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const handleFormSubmit = (values) => {
-    console.log(values);
-
     dispatch(registerUser(values));
+    navigate('/');
   };
 
  

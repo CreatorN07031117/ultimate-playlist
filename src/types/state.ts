@@ -1,11 +1,12 @@
 import store from '../store';
 
 import type { Album, UserData } from './types';
-import type { Sorting } from './enums';
-import { AuthorizationStatus } from '../components/const';
+import { AuthorizationStatus } from '../const';
 
 
-export type SiteData = {
+export type SiteProcess = {
+    pages: number;
+    currentPage: number;
     genres: string[];
     isGenresLoading: boolean;
     albums: Album[];
@@ -14,11 +15,8 @@ export type SiteData = {
     isAlbumLoading: boolean;
     favoriteAlbums: Album[];
     isFavoriteAlbumsLoading: boolean;
+    sortingType: string;
 };
-
-export type SiteProcess = {
-    sorting: Sorting;
-}
 
 export type User = {
     authorizationStatus: AuthorizationStatus;

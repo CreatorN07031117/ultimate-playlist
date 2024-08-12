@@ -1,57 +1,61 @@
 import { createClient } from '@supabase/supabase-js';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { RcFile } from 'antd/es/upload';
 
 import { adaptUserDataToClient } from '../adapters/adapters-to-client';
 import type { Album, UserData  } from '../types/types';
 import { CreateUserDTO } from '../adapters/user.dto';
-import { RcFile } from 'antd/es/upload';
+import { ALBUMS_PER_PAGE } from '../const';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+const ALBUMS_TABLE = 'albums';
+const STORAGE = 'cover_img';
+
 const supabase = createClient(SUPABASE_URL, ANON_KEY);
 
-async function getCountRowsInTable(tableName) {
-  let { data, error } = await supabase
-    .from(tableName)
-    .select('COUNT(*)')
-
-  if (error) {
-    console.error('Error fetching row count:', error)
-    return
-  }
-
-  console.log('Number of rows in table:', data[0].count)
-}
-
-export const getAlbumsCount = createAsyncThunk<number, undefined>(
+export const getAlbumsCount = createAsyncThunk<number, void, AsyncThunkConfig>(
   'albums', 
   async () => {
-    const { data, error } = await supabase
-    .from('albums')
-    .select('COUNT(*)')
+    const response = await supabase
+    .from(ALBUMS_TABLE)
+    .select('*', { count: 'exact', head: true });
 
-  if (error) {
-    console.error('Error fetching row count:', error)
+  if (response.error) {
+    console.error('Error fetching row count:', response.error)
     return
   }
-    console.log(data[0].count)
-    return data[0].count as number;
+    return response.count;
   }
 )
 
-export const fetchAlbums = createAsyncThunk<Album[], undefined>(
+interface FetchAlbumsArgs {
+  pageNumber: number;
+  sortingType?: string;
+}
+
+export const fetchAlbumsForPage = createAsyncThunk<Album[], FetchAlbumsArgs>(
   'albums/fetch',
-  async () => {
-    const { data, error } = await supabase
-      .from('albums')
-      .select('*');
+  async ({ pageNumber = 1, sortingType }: FetchAlbumsArgs) => {
+    const start = (pageNumber - 1) * ALBUMS_PER_PAGE;
+    const end = start + ALBUMS_PER_PAGE - 1;
+
+    let query = supabase
+      .from(ALBUMS_TABLE)
+      .select('*')
+      .range(start, end);
+
+    if (sortingType !== "") {
+      query = query.order('releaseDate', { ascending: sortingType === 'early' });
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       throw error;
     }
-
-    return data;
+    return data as Album[];
   }
 );
 
@@ -75,7 +79,7 @@ export const fetchAlbumById = createAsyncThunk<Album, string>(
   'albums/id/fetch',
   async (albumId) => {
     const { data, error } = await supabase
-      .from('albums')
+      .from(ALBUMS_TABLE)
       .select('*')
       .eq('id', albumId);
 
@@ -91,7 +95,7 @@ export const addAlbum = createAsyncThunk<string, Album>(
   'albums/add',
   async (albumData: Album) => {
       const { data, error } = await supabase
-        .from('albums')
+        .from(ALBUMS_TABLE)
         .insert(albumData);
 
       if (error) {
@@ -102,11 +106,30 @@ export const addAlbum = createAsyncThunk<string, Album>(
   }
 )
 
+export const fetchFilteredAlbums = createAsyncThunk<Album[], string>(
+  'albums/filtered',
+  async (genre: string) => {
+    console.log('gg')
+      const { data, error } = await supabase
+        .from(ALBUMS_TABLE)
+        .select('*')
+        .contains('genres', [genre]);
+
+        console.log(data)
+      if (error) {
+        console.error('Ошибка при получении данных:', error);
+        return []; // Возвращаем пустой массив вместо null
+      }
+
+      return data as Album[]; // Убедитесь, что типизация верна
+  }
+);
+
 export const deleteAlbum = createAsyncThunk<Album | null, string>(
   'albums/delete',
   async (albumId) => {
     const { data, error } = await supabase
-    .from('albums') // Замените 'your_table_name' на имя вашей таблицы
+    .from(ALBUMS_TABLE) // Замените 'your_table_name' на имя вашей таблицы
     .delete()
     .eq('id', albumId); // Условие для выбора строки по ID
 
@@ -127,7 +150,7 @@ export const registerUser = createAsyncThunk<UserData, {email: string, password:
           options: {
             data: {
               username: name,
-              userType: 'editor',
+              userType: 'user',
               favorites: [],
             }
         }});
@@ -140,6 +163,24 @@ export const registerUser = createAsyncThunk<UserData, {email: string, password:
       }
 );
 
+export const signIn = createAsyncThunk<UserData, {email: string, password: string}>(
+  'users/signIn',
+  async ({email, password}) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+  
+    if (error) {
+      console.error('Ошибка при входе:', error.message);
+      return null;
+    }
+  
+    console.log('Успешный вход:', data);
+    return data;
+  }
+)
+
 //ToDo: Перенести в типы
 type UploadURLType = {
   fullPath: string,
@@ -150,7 +191,7 @@ type UploadURLType = {
 export const uploadFile = createAsyncThunk<UploadURLType, RcFile >(
   'file/upload',
   async (file) => {
-    const { data, error } = await supabase.storage.from('cover_img').upload(file.name, file, {
+    const { data, error } = await supabase.storage.from(STORAGE).upload(file.name, file, {
       contentType: 'image/jpeg',
     })
 

@@ -16,7 +16,6 @@ const UserType = {
 export type UserType = typeof UserType[keyof typeof UserType];
 
 export const StoreSlice ={
-  siteData: 'SITE_DATA',
   siteProcess: 'SITE_PROCESS',
   userData: 'USER_DATA',
 } as const;
@@ -26,7 +25,7 @@ export type StoreSlice = typeof StoreSlice[keyof typeof StoreSlice];
 export const SubmitStatus = {
   still: 'STILL',
   pending: 'PENDING',
-  fullfilled: 'FULLFILLED',
+  fulfilled: 'FULFILLED',
   rejected:'REJECTED',
 } as const;
 

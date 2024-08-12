@@ -2,13 +2,13 @@ import React, {useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input, Form, Button, Checkbox, DatePicker, InputNumber, Upload, Alert } from "antd";
 import TextArea from 'antd/es/input/TextArea';
+import { RcFile } from 'antd/es/upload';
+import { UploadOutlined } from '@ant-design/icons';
 
 import {uploadFile, addAlbum} from '../../store/actions';
-import { AppDispatch, State } from '../../types/state';
-import { AlbumFormat } from '../../types/enums';
+import type { AppDispatch, State } from '../../types/state';
+import type { AlbumFormat } from '../../types/enums';
 import s from "./new-album.module.css";
-import { UploadOutlined } from '@ant-design/icons';
-import { RcFile } from 'antd/es/upload';
 
 type UploadURLType = {
   fullPath: string,
@@ -25,7 +25,7 @@ const NewAlbum = (): JSX.Element => {
     successVisible: false,
   })
 
-  const genres = useSelector((state:State) => state.SITE_DATA.genres);
+  const genres = useSelector((state:State) => state.SITE_PROCESS.genres);
 
   const genreOptions = genres.length > 0 && genres.map((genre) => ({ label: genre, value: genre }));
 

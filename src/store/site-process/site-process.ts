@@ -2,11 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import { Album } from '../../types/types';
 import { StoreSlice } from '../../types/enums';
-import { deleteAlbum, fetchAlbumById, fetchAlbums, fetchGenres,  } from '../actions';
-import type { SiteData } from '../../types/state';
+import { deleteAlbum, fetchAlbumById, fetchAlbumsForPage, fetchFilteredAlbums, fetchGenres, getAlbumsCount,  } from '../actions';
+import type { SiteProcess } from '../../types/state';
+import { ALBUMS_PER_PAGE } from '../../const';
 
-const initialState: SiteData = {
-  qtyAlbums: 0,
+const initialState: SiteProcess = {
+  pages: 1,
+  currentPage: 1,
   albums: [] as Album[],
   isAlbumsLoading: false,
   album: null,
@@ -14,22 +16,34 @@ const initialState: SiteData = {
   favoriteAlbums: [],
   isFavoriteAlbumsLoading: false,
   genres: [],
+  sortingType: '',
+  isGenresLoading: false
 };
 
-export const siteData = createSlice({
-  name: StoreSlice.siteData,
+export const siteProcess = createSlice({
+  name: StoreSlice.siteProcess,
   initialState,
-  reducers: {},
+  reducers: {
+    getCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
+    getSortingType: (state, action) => {
+      state.sortingType = action.payload;
+    }
+  },
   extraReducers(builder) {
     builder
-      .addCase(fetchAlbums.pending, (state) => {
+      .addCase(getAlbumsCount.fulfilled, (state, action) => {
+        state.pages = Math.ceil(action.payload / ALBUMS_PER_PAGE);
+      })
+      .addCase(fetchAlbumsForPage.pending, (state) => {
         state.isAlbumsLoading = true;
       })
-      .addCase(fetchAlbums.fulfilled, (state, action) => {
+      .addCase(fetchAlbumsForPage.fulfilled, (state, action) => {
         state.albums = action.payload;
         state.isAlbumsLoading = false;
       })
-      .addCase(fetchAlbums.rejected, (state) => {
+      .addCase(fetchAlbumsForPage.rejected, (state) => {
         state.isAlbumsLoading = false;
       })
       .addCase(fetchAlbumById.pending, (state) => {
@@ -56,9 +70,20 @@ export const siteData = createSlice({
         const index = state.albums.findIndex((item) => item.id === action.meta.arg)
         const updAlbumsList = [...state.albums];
         updAlbumsList.splice(index, 1);
-        console.log(updAlbumsList)
         state.albums = updAlbumsList;
         state.isAlbumLoading = false;
       })
+      .addCase(fetchFilteredAlbums.pending, (state) => {
+        state.isAlbumsLoading = true;
+      })
+      .addCase(fetchFilteredAlbums.fulfilled, (state, action) => {
+        state.albums = action.payload;
+        state.isAlbumsLoading = false;
+      })
+      .addCase(fetchFilteredAlbums.rejected, (state) => {
+        state.isAlbumsLoading = false;
+      })
   }
 });
+
+export const { getCurrentPage, getSortingType } = siteProcess.actions;

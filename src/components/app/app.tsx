@@ -10,7 +10,7 @@ import EditAlbum from '../edit-album.page/edit-album';
 import NotFound from '../not-found.page/not-found';
 import { Header } from '../header/header';
 import PrivateRoute from '../private-route/private-route';
-import { AppRoute, AuthorizationStatus } from '../const';
+import { AppRoute, AuthorizationStatus } from '../../const';
 
 import './app.module.css'
 
@@ -21,6 +21,7 @@ const App = (): JSX.Element => {
     <Routes>
       <Route element={<Header />}>
         <Route index element={<Catalog />} />
+        <Route path='/:id' element={<Catalog />} />
         <Route path={`${AppRoute.Album}/:id`} element={<Album />} />
         <Route
           path={`${AppRoute.Album}/:id${AppRoute.Edit}`}

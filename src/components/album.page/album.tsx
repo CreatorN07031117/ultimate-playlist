@@ -5,7 +5,7 @@ import { Tag } from "antd";
 import { HeartOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import { OptionsBtn } from '../options-btn/options-btn';
-import { getAlbum } from '../../store/site-data/selectors';
+import { getAlbum } from '../../store/site-process/selectors';
 import { fetchAlbumById } from '../../store/actions';
 import { formatDate } from '../../helpers/format-date';
 
@@ -26,7 +26,7 @@ const Album = () => {
     }
   }, [params, dispatch]);
 
-  const album = useSelector((state:State) => state.SITE_DATA.album);
+  const album = useSelector((state:State) => state.SITE_PROCESS.album);
 
   return (
     <article className={s.albumWrapper}>

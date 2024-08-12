@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { HeartOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { deleteAlbum } from '../../store/actions';
-import s from './options-btn.module.css';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { HeartOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+
+import { deleteAlbum } from '../../store/actions';
 import { AppDispatch } from '../../types/state';
+import s from './options-btn.module.css';
+import { AppRoute } from '../../const';
 
 type Props = {
   option?: 'album'
@@ -12,9 +15,10 @@ type Props = {
 
 export const OptionsBtn = (props: Props) => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate()
 
   const clickFavoriteBtnHandler = () => {};
-  const clickEditAlbumBtnHandler = () => {};
+  const clickEditAlbumBtnHandler = () => {navigate(`${AppRoute.Album}/${props.albumId}${AppRoute.Edit}`)};
   async function  clickDeleteAlbumBtnHandler (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) {
     event.preventDefault();
     event.stopPropagation();
