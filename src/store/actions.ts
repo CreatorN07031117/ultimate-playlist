@@ -86,7 +86,6 @@ export const fetchAlbumById = createAsyncThunk<Album, string>(
     if (error) {
       throw error;
     }
-
     return data[0];
   }
 );
@@ -103,6 +102,25 @@ export const addAlbum = createAsyncThunk<string, Album>(
       }
 
       return 'success'; // Возвращаем данные, если операция прошла успешно
+  }
+)
+
+export const updateAlbum = createAsyncThunk<Album, {albumData: Album, id: string}>(
+  'albums/update',
+  async ({ albumData, id }, { rejectWithValue }) => {
+    console.log({ albumData, id })
+    const { data, error } = await supabase
+      .from(ALBUMS_TABLE)
+      .update({ ...albumData })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Ошибка при обновлении записи:', error.message);
+      return rejectWithValue(error.message);
+    }
+
+    console.log('Запись успешно обновлена:', data);
+    return data;
   }
 )
 

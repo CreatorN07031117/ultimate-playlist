@@ -1,5 +1,7 @@
 export const ALBUMS_PER_PAGE = 24;
 
+export const IMG_UPLOAD_URL = 'https://nfejynuraifmrtmngcaa.supabase.co/storage/v1/object/public/cover_img/';
+
 export const AppRoute = {
   Root: '/',
   Login: '/login',

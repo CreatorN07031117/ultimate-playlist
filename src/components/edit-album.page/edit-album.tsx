@@ -1,15 +1,18 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useParams } from 'react-router-dom';
+import moment from 'moment';
 import { Input, Form, Button, Checkbox, DatePicker, InputNumber, Upload, Alert } from "antd";
 import TextArea from 'antd/es/input/TextArea';
 import { RcFile } from 'antd/es/upload';
 import { UploadOutlined } from '@ant-design/icons';
 
-import {uploadFile, addAlbum} from '../../store/actions';
+import {uploadFile, addAlbum, fetchAlbumById, updateAlbum} from '../../store/actions';
 import type { AppDispatch, State } from '../../types/state';
-import type { Album as AlbumType} from '../../types/types';
 import { AlbumFormat } from '../../types/enums';
+import { IMG_UPLOAD_URL } from '../../const';
 import s from "./edit-album.module.css";
+
 
 type UploadURLType = {
   fullPath: string,
@@ -18,139 +21,138 @@ type UploadURLType = {
 }
 
 const EditAlbum = (): JSX.Element => {
-  const [ albumState, useAlbumState ] = useState({
-    ...album,
-  })
+  const { id } = useParams();
+  const dispatch = useDispatch<AppDispatch>();
+  const albumState = useSelector((state: State) => state.SITE_PROCESS.album);
+  const genres = useSelector((state: State) => state.SITE_PROCESS.genres);
+
   const [form] = Form.useForm();
-  const [uploadStatus, setUploadStatus] = useState('prepared')
-  const [uploadUrl, setUploadUrl] = useState<null | string>(albumState.coverImg);
+  const [uploadStatus, setUploadStatus] = useState('prepared');
+  const [uploadUrl, setUploadUrl] = useState<string>('');
   const [submitState, setSubmitState] = useState({
     successVisible: false,
-  })
+  });
 
-  const genres = useSelector((state:State) => state.SITE_PROCESS.genres);
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchAlbumById(id));
+    }
+  }, [dispatch, id]);
 
   const genreOptions = genres.length > 0 && genres.map((genre) => ({ label: genre, value: genre }));
-
-  const albumFormatOptions = Object.keys(AlbumFormat).map((format) => {return {
+  
+  const albumFormatOptions = Object.keys(AlbumFormat).map((format) => ({
     label: format,
     value: format,
-  }})
+  }));
 
-  const dispatch = useDispatch<AppDispatch>();
+  async function handleFormSubmit(values) {
 
-  async function handleFormSubmit (values) {
-    const newAlbum = {...values, coverImg: `https://nfejynuraifmrtmngcaa.supabase.co/storage/v1/object/public/${uploadUrl}`, description: [values.description]}
-    console.log(newAlbum)
-    const result = await dispatch(addAlbum(newAlbum)).unwrap();
-    if(result === 'success') {
-      return setSubmitState({ successVisible: true })}
-    } 
-
-  const handleChange = () => {
-
+    console.log(values)
+    const albumData = {
+      ...values,
+      coverImg: `https://nfejynuraifmrtmngcaa.supabase.co/storage/v1/object/public/${uploadUrl}`,
+      description: [...values.description],
+    };
+    const result = await dispatch(updateAlbum({albumData: albumData, id: id as string}));
+    if (result === 'success') {
+      setSubmitState({ successVisible: true });
+    }
   }
 
-  const handleDataChange = () => {
-
-  }
-
-  const handleQuantityChange = () => {
-
-  }
-
-  async function handleBeforeUpload(file: RcFile, ) {
-    console.log(file);
-    const signedUrl:UploadURLType = await dispatch(uploadFile(file)).unwrap();
+  async function handleBeforeUpload(file: RcFile) {
+    const signedUrl: UploadURLType = await dispatch(uploadFile(file)).unwrap();
     setUploadUrl(signedUrl.fullPath);
     return false;
   }
 
-
-  if (genres.length === 0) {
-    return <div>Loading...</div>
+  if (!albumState || genres.length === 0) {
+    return <div>Loading...</div>;
   }
-  
+
   return (
     <div className={s.root}>
       <div className={s.newAlbumWrapper}>
-    <div className={s.formWrapper}>
-      <Form form={form} onFinish={handleFormSubmit}>
-        <label className="visually-hidden">Album's title</label>
-        <Form.Item name="name">
-          <Input
-            size="large"
-            placeholder="Album title"
-            value={albumState.name}
-            required
-            minLength={1}
-            maxLength={50}
-          />
-        </Form.Item>
-        <label className="visually-hidden">Who is the artist of the album</label>
-        <Form.Item name="musician">
-          <Input
-            size="large"
-            placeholder="Musician"
-            value={albumState.musician}
-            required
-            minLength={1}
-            maxLength={50}
-          />
-        </Form.Item>
-        <label className="visually-hidden">Genres</label>
-        <Form.Item name="genres">
-          <Checkbox.Group options={genreOptions} value={albumState.genres}  onChange={handleChange} />
-        </Form.Item>
-        <label className="visually-hidden">Release Date</label>
-        <Form.Item name="releaseDate">
-          <DatePicker onChange={handleDataChange} value={albumState.releaseDate}/>
-        </Form.Item>
-        <label className="visually-hidden">How many songs</label>
-        <Form.Item name="qtySongs">
-          <InputNumber min={1} max={20} value={albumState.qtySongs} onChange={handleQuantityChange} />
-        </Form.Item>
-        <label className="visually-hidden">Download cover for album</label>
-        <Form.Item name="coverImg">
-          <Upload
-            action={uploadUrl as unknown as string}
-            method="PUT"
-            beforeUpload={handleBeforeUpload}
-            onChange={({ file }) => {
-              if (file.status === 'done') {
-                console.log('File uploaded successfully');
-              } else if (file.status === 'error') {
-                console.error('File upload failed');
-              }
-            }}
+        <div className={s.formWrapper}>
+          <Form
+            form={form}
+            onFinish={handleFormSubmit}
+            initialValues={{
+              name: albumState.name,
+              genres: albumState.genres,
+              format: albumState.format,
+              qtySongs: albumState.qtySongs,
+              musician: albumState.musician,
+              description: albumState.description,
+              releaseDate: moment(albumState.releaseDate),
+ 
+            }} 
           >
-            {uploadStatus === 'prepared' && <Button icon={<UploadOutlined />}>Upload</Button>}
-          </Upload>
-        </Form.Item>
-        <label className="visually-hidden">Description</label>
-        <Form.Item name="description">
-          <TextArea rows={8} value={albumState.description}/>
-        </Form.Item>
-        <label className="visually-hidden">What formats does album has:</label>
-        <Form.Item name="format">
-          <Checkbox.Group options={albumFormatOptions} value={albumState.format}  onChange={handleChange} />
-        </Form.Item>
-        <Button
-              className={s.button}
-              htmlType="submit"
-            >
+            <Form.Item name="name">
+              <Input
+                size="large"
+                placeholder="Album title"
+                required
+                minLength={1}
+                maxLength={50}
+              />
+            </Form.Item>
+            <Form.Item name="musician">
+              <Input
+                size="large"
+                placeholder="Musician"
+                required
+                minLength={1}
+                maxLength={50}
+              />
+            </Form.Item>
+            <Form.Item name="genres">
+              <Checkbox.Group options={genreOptions} />
+            </Form.Item>
+            <Form.Item name="releaseDate">
+              <DatePicker />
+            </Form.Item>
+            <Form.Item name="qtySongs">
+              <InputNumber min={1} max={20} />
+            </Form.Item>
+            <Form.Item name="coverImg">
+              <Upload
+                action={uploadUrl as unknown as string}
+                method="PUT"
+                beforeUpload={handleBeforeUpload}
+                defaultFileList={[{
+                  uid: '-1', 
+                  name: `${albumState.coverImg.replace(IMG_UPLOAD_URL, '')}`,
+                  status: 'done',
+                  url: `${albumState.coverImg}`, 
+                  }]}
+              >
+                {uploadStatus === 'prepared' && <Button icon={<UploadOutlined />}>Upload</Button>}
+              </Upload>
+            </Form.Item>
+            <Form.Item name="description">
+              <TextArea rows={8} />
+            </Form.Item>
+            <Form.Item name="format">
+              <Checkbox.Group options={albumFormatOptions} />
+            </Form.Item>
+            <Button className={s.button} htmlType="submit">
               Update album
             </Button>
-      </Form>
-      {submitState.successVisible && <Alert
-          message="Album updated"
-          description="Thanks a lot!"
-          type="success"
-          onClose={() => setSubmitState({ successVisible: false })}
-        />}
+          </Form>
+          {submitState.successVisible && (
+            <Alert
+              message="Album updated"
+              description="Thanks a lot!"
+              type="success"
+              onClose={() => setSubmitState({ successVisible: false })}
+            />
+          )}
+        </div>
+      </div>
     </div>
-    </div>
-  </div>
-)}
+  );
+};
+
 
 export default EditAlbum;

@@ -15,7 +15,6 @@ import type { State } from '../../types/state';
 import s from './catalog.module.css';
 
 const Catalog = (): JSX.Element => {
-  const useAppSelector: TypedUseSelectorHook<State> = useSelector;
   const isAlbumsLoading = useSelector((state: State) => state.SITE_PROCESS.isAlbumsLoading);
   const albums = useSelector((state:State) => state.SITE_PROCESS.albums, shallowEqual);
   const sortingType = useSelector((state:State) => state.SITE_PROCESS.sortingType);
