@@ -121,20 +121,31 @@ export const updateAlbum = createAsyncThunk<Album, {albumData: Album, id: string
   }
 )
 
-export const fetchFilteredAlbums = createAsyncThunk<Album[], string>(
+export const fetchFilteredAlbums = createAsyncThunk<{
+  albums: Album[],
+  rows: number,
+  filters: string,
+}, {genre:string, pageNumber:number}>(
   'albums/filtered',
-  async (genre: string) => {
-      const { data, error } = await supabase
-        .from(ALBUMS_TABLE)
-        .select('*')
-        .contains('genres', [genre]);
-
-        console.log(data)
-      if (error) {
-        throw error;
+  async ({ genre, pageNumber = 1 }) => {
+    const start = (pageNumber - 1) * ALBUMS_PER_PAGE;
+    const end = start + ALBUMS_PER_PAGE - 1;
+      const response = await supabase
+      .from(ALBUMS_TABLE)
+      .select('*', { count: 'exact'})
+      .contains('genres', [genre])
+      .range(start, end)
+ 
+        console.log(response.data)
+      if (response.error) {
+        throw response.error;
       }
 
-      return data as Album[];
+      return {
+        rows: response.count,
+        albums: response.data as Album[],
+        filters: genre
+      };
   }
 );
 
@@ -142,9 +153,9 @@ export const deleteAlbum = createAsyncThunk<Album | null, string>(
   'albums/delete',
   async (albumId) => {
     const { data, error } = await supabase
-    .from(ALBUMS_TABLE) // Замените 'your_table_name' на имя вашей таблицы
+    .from(ALBUMS_TABLE)
     .delete()
-    .eq('id', albumId); // Условие для выбора строки по ID
+    .eq('id', albumId);
 
   if (error) {
     console.error('Ошибка при удалении:', error);

@@ -22,7 +22,10 @@ export const Filters = () => {
     };
 
     setFilters(updatedFilters);
-    dispatch(fetchFilteredAlbums(updatedFilters.genre));
+    dispatch(fetchFilteredAlbums({
+      genre: updatedFilters.genre,
+      pageNumber: 1
+    }));
 
     // Обновление URL с новыми фильтрами
     const searchParams = new URLSearchParams(updatedFilters).toString();

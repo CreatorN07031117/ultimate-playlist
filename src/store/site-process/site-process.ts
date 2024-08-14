@@ -77,13 +77,19 @@ export const siteProcess = createSlice({
       })
       .addCase(fetchFilteredAlbums.pending, (state) => {
         state.isAlbumsLoading = true;
+        state.isFiltered = true;
       })
       .addCase(fetchFilteredAlbums.fulfilled, (state, action) => {
-        state.albums = action.payload;
+        state.albums = action.payload.albums;
+        state.pages = Math.ceil(action.payload.rows/ ALBUMS_PER_PAGE);
+        state.filters = {
+          genres: action.payload.filters,
+        }
         state.isAlbumsLoading = false;
       })
       .addCase(fetchFilteredAlbums.rejected, (state) => {
         state.isAlbumsLoading = false;
+        state.isFiltered = false;
       })
   }
 });

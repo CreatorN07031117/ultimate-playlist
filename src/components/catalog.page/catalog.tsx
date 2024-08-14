@@ -16,7 +16,7 @@ import s from './catalog.module.css';
 
 const Catalog = (): JSX.Element => {
   const isAlbumsLoading = useSelector((state: State) => state.SITE_PROCESS.isAlbumsLoading);
-  const albums = useSelector((state:State) => state.SITE_PROCESS.albums, shallowEqual);
+  const {isFiltered, filters, albums} = useSelector((state:State) => state.SITE_PROCESS);
   const sortingType = useSelector((state:State) => state.SITE_PROCESS.sortingType);
   const location = useLocation();
 
@@ -57,7 +57,7 @@ const Catalog = (): JSX.Element => {
   
   return (
   <div className={s.catalogWrapper}>
-    <h1>Albums</h1>
+    <h1>{`Albums${isFiltered ?  `: ${filters.genres}` : ''}`}</h1>
     <div className={s.panelWrapper}>
       <Filters />
       <div className={s.sortingWrapper}>
