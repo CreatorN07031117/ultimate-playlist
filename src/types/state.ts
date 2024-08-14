@@ -11,6 +11,10 @@ export type SiteProcess = {
     isGenresLoading: boolean;
     albums: Album[];
     isAlbumsLoading: boolean;
+    isFiltered: boolean;
+    filters: {
+      [key: string]: string;
+    }
     album: Album | null;
     isAlbumLoading: boolean;
     favoriteAlbums: Album[];

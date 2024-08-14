@@ -9,42 +9,35 @@ import s from './filters.module.css';
 export const Filters = () => {
   const [filters, setFilters] = useState({});
   const dispatch = useDispatch<AppDispatch>();
-  const params = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { genres } = useSelector((state:State) => state.SITE_PROCESS);
+  const { genres } = useSelector((state: State) => state.SITE_PROCESS);
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(filters).toString();
-    navigate(`${location.pathname}?${searchParams}`);
-  }, [filters, navigate, location.pathname]);
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const initialFilters = {};
-    searchParams.forEach((value, key) => {
-      initialFilters[key] = value;
-    });
-    setFilters(initialFilters);
-
-    if (initialFilters?.genre) {
-      dispatch(fetchFilteredAlbums(initialFilters.genre));
-    }
-  }, []);
-
-  const handleFilterChange = (filterName, value) => {
-    setFilters(prevFilters => ({
-      ...prevFilters,
+  // Обработка изменения фильтров
+  const handleFilterChange = (filterName: string, value: string) => {
+    const updatedFilters = {
+      ...filters,
       [filterName]: value,
-    }));
-    dispatch(fetchFilteredAlbums(value));
+    };
+
+    setFilters(updatedFilters);
+    dispatch(fetchFilteredAlbums(updatedFilters.genre));
+
+    // Обновление URL с новыми фильтрами
+    const searchParams = new URLSearchParams(updatedFilters).toString();
+    navigate(`${location.pathname}?${searchParams}`);
+    console.log(`${location.pathname}?${searchParams}`)
   };
-  
+
   return (
     <div className={s.filtersWrapper}>
-      {genres.map((genre) => (<button onClick={() => handleFilterChange('genre', genre)}>{genre}</button>))}
+      {genres.map((genre) => (
+        <button key={genre} onClick={() => handleFilterChange('genre', genre)}>
+          {genre}
+        </button>
+      ))}
     </div>
-  )
-}
+  );
+};
 

@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import { Input, Form, Button, Checkbox, DatePicker, InputNumber, Upload, Alert } from "antd";
 import TextArea from 'antd/es/input/TextArea';
 import { RcFile } from 'antd/es/upload';
 import { UploadOutlined } from '@ant-design/icons';
 
-import {uploadFile, addAlbum, fetchAlbumById, updateAlbum} from '../../store/actions';
+import {uploadFile,fetchAlbumById, updateAlbum} from '../../store/actions';
 import type { AppDispatch, State } from '../../types/state';
 import { AlbumFormat } from '../../types/enums';
 import { IMG_UPLOAD_URL } from '../../const';
-import s from "./edit-album.module.css";
+import s from './edit-album.module.css';
 
 
 type UploadURLType = {
@@ -23,8 +23,10 @@ type UploadURLType = {
 const EditAlbum = (): JSX.Element => {
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const albumState = useSelector((state: State) => state.SITE_PROCESS.album);
   const genres = useSelector((state: State) => state.SITE_PROCESS.genres);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [form] = Form.useForm();
   const [uploadStatus, setUploadStatus] = useState('prepared');
@@ -47,7 +49,6 @@ const EditAlbum = (): JSX.Element => {
   }));
 
   async function handleFormSubmit(values) {
-
     console.log(values)
     const albumData = {
       ...values,
@@ -55,8 +56,12 @@ const EditAlbum = (): JSX.Element => {
       description: [...values.description],
     };
     const result = await dispatch(updateAlbum({albumData: albumData, id: id as string}));
-    if (result === 'success') {
-      setSubmitState({ successVisible: true });
+    if (updateAlbum.fulfilled.match(result)) {
+      // Успешное выполнение, делаем редирект на страницу компонента
+      navigate(`/album/${id}`);
+    } else if (updateAlbum.rejected.match(result)) {
+      // Обработка ошибки, показываем Alert с сообщением об ошибке
+      setErrorMessage(result.error.message || 'Ошибка при обновлении альбома');
     }
   }
 
@@ -72,6 +77,7 @@ const EditAlbum = (): JSX.Element => {
 
   return (
     <div className={s.root}>
+      {errorMessage && <Alert message={errorMessage} type="error" />}
       <div className={s.newAlbumWrapper}>
         <div className={s.formWrapper}>
           <Form

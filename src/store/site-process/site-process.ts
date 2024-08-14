@@ -13,6 +13,8 @@ const initialState: SiteProcess = {
   isAlbumsLoading: false,
   album: null,
   isAlbumLoading: false,
+  isFiltered: false,
+  filters: {},
   favoriteAlbums: [],
   isFavoriteAlbumsLoading: false,
   genres: [],

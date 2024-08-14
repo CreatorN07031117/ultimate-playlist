@@ -98,28 +98,25 @@ export const addAlbum = createAsyncThunk<string, Album>(
         .insert(albumData);
 
       if (error) {
-        throw error; // Используйте throw для возврата ошибки
+        throw error;
       }
 
-      return 'success'; // Возвращаем данные, если операция прошла успешно
+      return 'success';
   }
 )
 
 export const updateAlbum = createAsyncThunk<Album, {albumData: Album, id: string}>(
   'albums/update',
-  async ({ albumData, id }, { rejectWithValue }) => {
-    console.log({ albumData, id })
+  async ({ albumData, id }) => {
     const { data, error } = await supabase
       .from(ALBUMS_TABLE)
       .update({ ...albumData })
       .eq('id', id);
 
     if (error) {
-      console.error('Ошибка при обновлении записи:', error.message);
-      return rejectWithValue(error.message);
+      throw error;
     }
 
-    console.log('Запись успешно обновлена:', data);
     return data;
   }
 )
@@ -127,7 +124,6 @@ export const updateAlbum = createAsyncThunk<Album, {albumData: Album, id: string
 export const fetchFilteredAlbums = createAsyncThunk<Album[], string>(
   'albums/filtered',
   async (genre: string) => {
-    console.log('gg')
       const { data, error } = await supabase
         .from(ALBUMS_TABLE)
         .select('*')
@@ -135,11 +131,10 @@ export const fetchFilteredAlbums = createAsyncThunk<Album[], string>(
 
         console.log(data)
       if (error) {
-        console.error('Ошибка при получении данных:', error);
-        return []; // Возвращаем пустой массив вместо null
+        throw error;
       }
 
-      return data as Album[]; // Убедитесь, что типизация верна
+      return data as Album[];
   }
 );
 
