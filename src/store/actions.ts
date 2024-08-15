@@ -41,16 +41,16 @@ export const fetchAlbumsForPage = createAsyncThunk<Album[], FetchAlbumsArgs>(
     const start = (pageNumber - 1) * ALBUMS_PER_PAGE;
     const end = start + ALBUMS_PER_PAGE - 1;
 
-    let query = supabase
+    let fetch = supabase
       .from(ALBUMS_TABLE)
       .select('*')
       .range(start, end);
 
     if (sortingType !== "") {
-      query = query.order('releaseDate', { ascending: sortingType === 'early' });
+      fetch = fetch.order('releaseDate', { ascending: sortingType === 'early' });
     }
 
-    const { data, error } = await query;
+    const { data, error } = await fetch;
 
     if (error) {
       throw error;
@@ -101,6 +101,7 @@ export const addAlbum = createAsyncThunk<string, Album>(
         throw error;
       }
 
+      console.log(data);
       return 'success';
   }
 )
@@ -125,17 +126,24 @@ export const fetchFilteredAlbums = createAsyncThunk<{
   albums: Album[],
   rows: number,
   filters: string,
-}, {genre:string, pageNumber:number}>(
+}, {genre:string, pageNumber:number, sortingType?: string}>(
   'albums/filtered',
-  async ({ genre, pageNumber = 1 }) => {
+  async ({ genre, pageNumber = 1, sortingType }) => {
     const start = (pageNumber - 1) * ALBUMS_PER_PAGE;
     const end = start + ALBUMS_PER_PAGE - 1;
-      const response = await supabase
-      .from(ALBUMS_TABLE)
-      .select('*', { count: 'exact'})
-      .contains('genres', [genre])
-      .range(start, end)
- 
+
+    let fetch = supabase
+    .from(ALBUMS_TABLE)
+    .select('*', { count: 'exact'})
+    .contains('genres', [genre])
+    .range(start, end);
+
+    if (sortingType !== "") {
+      fetch = fetch.order('releaseDate', { ascending: sortingType === 'early' });
+    }
+
+      const response = await fetch;
+
         console.log(response.data)
       if (response.error) {
         throw response.error;
@@ -197,7 +205,7 @@ export const signIn = createAsyncThunk<UserData, {email: string, password: strin
   
     if (error) {
       console.error('Ошибка при входе:', error.message);
-      return null;
+      throw error;
     }
   
     console.log('Успешный вход:', data);

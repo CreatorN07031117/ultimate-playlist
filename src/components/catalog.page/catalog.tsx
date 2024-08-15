@@ -8,7 +8,7 @@ import { Card } from '../card/card';
 import { Pagination } from '../pagination/pagination';
 import { Filters } from '../filters/filters';
 import { getCurrentPage, getSortingType } from '../../store/site-process/site-process';
-import { fetchAlbumsForPage } from '../../store/actions';
+import { fetchAlbumsForPage, fetchFilteredAlbums } from '../../store/actions';
 import store from '../../store/index';
 import type { Album, AppDispatch } from '../../types/types';
 import type { State } from '../../types/state';
@@ -21,7 +21,23 @@ const Catalog = (): JSX.Element => {
   const location = useLocation();
 
   useEffect(() => {
-    if(location.pathname === '/'){
+
+    const page = location.pathname.replace('/', '');
+    const pageNumber = Number(page) > 0? Number(page) : 1;
+
+    if(location.search) {
+      const searchParams = new URLSearchParams(location.search);
+      const genre = searchParams.get('genre');
+      const filters = {
+        genre: genre ? decodeURIComponent(genre.replace(/\+/g, ' ')) : null,
+      };
+      
+      store.dispatch(fetchFilteredAlbums({
+        genre: filters.genre as string,
+        pageNumber: pageNumber,
+        sortingType,
+      }));
+    } else if(location.pathname === '/'){
       store.dispatch(fetchAlbumsForPage({
         pageNumber: 1,
         sortingType
@@ -30,7 +46,7 @@ const Catalog = (): JSX.Element => {
       const page = location.pathname.replace('/', '');
       store.dispatch(getCurrentPage(page))
       store.dispatch(fetchAlbumsForPage({
-        pageNumber: Number(page), 
+        pageNumber: pageNumber,
         sortingType
       }));
     }

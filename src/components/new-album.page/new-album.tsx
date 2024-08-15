@@ -7,7 +7,7 @@ import { UploadOutlined } from '@ant-design/icons';
 
 import {uploadFile, addAlbum} from '../../store/actions';
 import type { AppDispatch, State } from '../../types/state';
-import type { AlbumFormat } from '../../types/enums';
+import { AlbumFormat } from '../../types/enums';
 import s from "./new-album.module.css";
 
 type UploadURLType = {

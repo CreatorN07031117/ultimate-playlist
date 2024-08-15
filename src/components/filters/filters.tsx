@@ -30,7 +30,6 @@ export const Filters = () => {
     // Обновление URL с новыми фильтрами
     const searchParams = new URLSearchParams(updatedFilters).toString();
     navigate(`${location.pathname}?${searchParams}`);
-    console.log(`${location.pathname}?${searchParams}`)
   };
 
   return (
