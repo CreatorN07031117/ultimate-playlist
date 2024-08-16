@@ -13,6 +13,7 @@ import PrivateRoute from '../private-route/private-route';
 import { AppRoute, AuthorizationStatus } from '../../const';
 
 import './app.module.css'
+import { SearchResult } from '../search-result.page/search-result';
 
 const App = (): JSX.Element => {
 
@@ -23,6 +24,7 @@ const App = (): JSX.Element => {
         <Route index element={<Catalog />} />
         <Route path='/:id' element={<Catalog />} />
         <Route path={`${AppRoute.Album}/:id`} element={<Album />} />
+        <Route path={`${AppRoute.Search}`} element={<SearchResult />} />
         <Route
           path={`${AppRoute.Album}/:id${AppRoute.Edit}`}
           element={

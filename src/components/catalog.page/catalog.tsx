@@ -1,16 +1,17 @@
 import React, { useEffect } from 'react';
-import { TypedUseSelectorHook, useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { Dropdown, Space, Select } from "antd";
+import { Dropdown, Space } from "antd";
 import { DownOutlined } from '@ant-design/icons';
 
 import { Card } from '../card/card';
 import { Pagination } from '../pagination/pagination';
 import { Filters } from '../filters/filters';
+import { SearchInput } from '../search-input/search-input';
 import { getCurrentPage, getSortingType } from '../../store/site-process/site-process';
 import { fetchAlbumsForPage, fetchFilteredAlbums } from '../../store/actions';
 import store from '../../store/index';
-import type { Album, AppDispatch } from '../../types/types';
+import type { Album } from '../../types/types';
 import type { State } from '../../types/state';
 import s from './catalog.module.css';
 
@@ -77,6 +78,7 @@ const Catalog = (): JSX.Element => {
     <div className={s.panelWrapper}>
       <Filters />
       <div className={s.sortingWrapper}>
+        <SearchInput />
         <Dropdown
             menu={{
               items,

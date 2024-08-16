@@ -8,6 +8,7 @@ export const AppRoute = {
   Register: '/register',
   Favorites: '/favorites',
   Album: '/album',
+  Search: '/search',
   Add: '/add',
   Edit: '/edit',
   NotFound: '/404',

@@ -18,7 +18,10 @@ export const OptionsBtn = (props: Props) => {
   const navigate = useNavigate()
 
   const clickFavoriteBtnHandler = () => {};
-  const clickEditAlbumBtnHandler = () => {navigate(`${AppRoute.Album}/${props.albumId}${AppRoute.Edit}`)};
+  const clickEditAlbumBtnHandler = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    navigate(`${AppRoute.Album}/${props.albumId}${AppRoute.Edit}`)};
   async function  clickDeleteAlbumBtnHandler (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) {
     event.preventDefault();
     event.stopPropagation();
