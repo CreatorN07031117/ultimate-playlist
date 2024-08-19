@@ -1,8 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { rootReducer } from './root-reducer';
-import { fetchGenres, getAlbumsCount } from './actions';
+import { fetchGenres, getAlbumsCount, getUserStatus } from './actions';
 import history from '../history';
+import { getToken } from '../helpers/token-functions';
 
 const store = configureStore({
   reducer: rootReducer,
@@ -15,6 +16,9 @@ const store = configureStore({
   }),
 });
 
+const token = getToken();
+console.log(token)
+store.dispatch(getUserStatus(token));
 store.dispatch(getAlbumsCount());
 store.dispatch(fetchGenres());
 export default store;

@@ -24,3 +24,16 @@
 .userName {
   padding-left: 7px;
 }
+
+.buttonLink {
+  padding: 0;
+  border: none;
+}
+
+.buttonLink:focus, .buttonLink:focus-visible {
+  outline: none;
+}
+
+.buttonLink:hover {
+  color: #646cff;
+}

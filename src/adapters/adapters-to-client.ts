@@ -3,9 +3,9 @@ import { UserData } from "../types/types";
 
 export function adaptUserDataToClient (user: CreateUserDTO):UserData {
   return {
-    name: user.username,
+    name: user.name,
     email: user.email,
     type: user.userType,
-    favorites: user.favorites
+    favorites: user.favorites,
   }
 }

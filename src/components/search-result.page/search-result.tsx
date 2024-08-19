@@ -45,7 +45,6 @@ export const SearchResult = () => {
 
   return (
     <div className={s.searchWrapper}>
-      {console.log(searchResult)}
       <Search
         placeholder="input search text"
         defaultValue={String(searchText)}

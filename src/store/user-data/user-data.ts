@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { User } from '../../types/state';
-import { registerUser, signIn } from '../actions';
+import { getUserStatus, registerUser, signIn } from '../actions';
 import { AuthorizationStatus, StoreSlice } from '../../types/enums';
 
 const initialState: User = {
@@ -12,7 +12,12 @@ const initialState: User = {
 export const userProcess = createSlice({
   name: StoreSlice.userData,
   initialState,
-  reducers: {},
+  reducers: {
+    logOut: (state) => {
+      state.user = null;
+      state.authorizationStatus = AuthorizationStatus.noAuth;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(registerUser.fulfilled, (state, action) => {
@@ -31,5 +36,18 @@ export const userProcess = createSlice({
         state.user = null;
         state.authorizationStatus = AuthorizationStatus.noAuth;
       })
+      .addCase(getUserStatus.pending, (state) => {
+        state.authorizationStatus = AuthorizationStatus.unknown
+      })
+      .addCase(getUserStatus.fulfilled, (state, action) => {
+        state.authorizationStatus = AuthorizationStatus.auth;
+        state.user = action.payload;
+      })
+      .addCase(getUserStatus.rejected, (state) => {
+        state.authorizationStatus = AuthorizationStatus.noAuth;
+        state.user = null;
+      })
   }
 });
+
+export const { logOut } = userProcess.actions;

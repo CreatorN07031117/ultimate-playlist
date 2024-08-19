@@ -1,21 +1,29 @@
-import { createClient } from '@supabase/supabase-js';
+import type { History } from 'history';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createClient } from '@supabase/supabase-js';
 import { RcFile } from 'antd/es/upload';
 
 import { adaptUserDataToClient } from '../adapters/adapters-to-client';
 import type { Album, UserData } from '../types/types';
 import { CreateUserDTO } from '../adapters/user.dto';
-import { ALBUMS_PER_PAGE } from '../const';
+import { ALBUMS_PER_PAGE, AppRoute } from '../const';
+import { saveToken } from '../helpers/token-functions';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 const ALBUMS_TABLE = 'albums';
+const PROFILES_TABLE = 'profiles';
 const STORAGE = 'cover_img';
 
 const supabase = createClient(SUPABASE_URL, ANON_KEY);
 
-export const getAlbumsCount = createAsyncThunk<number, void, AsyncThunkConfig>(
+type Extra = {
+  history: History;
+};
+
+
+export const getAlbumsCount = createAsyncThunk<number, void>(
   'albums',
   async () => {
     const response = await supabase
@@ -106,7 +114,9 @@ export const addAlbum = createAsyncThunk<string, Album>(
 export const updateAlbum = createAsyncThunk<
   Album,
   { albumData: Album; id: string }
->('albums/update', async ({ albumData, id }) => {
+>(
+  'albums/update',
+  async ({ albumData, id }) => {
   const { data, error } = await supabase
     .from(ALBUMS_TABLE)
     .update({ ...albumData })
@@ -126,7 +136,9 @@ export const fetchFilteredAlbums = createAsyncThunk<
     filters: string;
   },
   { genre: string; pageNumber: number; sortingType?: string }
->('albums/filtered', async ({ genre, pageNumber = 1, sortingType }) => {
+>(
+  'albums/filtered', 
+  async ({ genre, pageNumber = 1, sortingType }) => {
   const start = (pageNumber - 1) * ALBUMS_PER_PAGE;
   const end = start + ALBUMS_PER_PAGE - 1;
 
@@ -190,43 +202,70 @@ export const searchAlbums = createAsyncThunk<Album[], string>(
 
 export const registerUser = createAsyncThunk<
   UserData,
-  { email: string; password: string; name: string }
->('users/signUp', async ({ email, password, name }) => {
-  const { data, error } = await supabase.auth.signUp({
+  { email: string; password: string; name: string },
+  { extra: Extra }
+>('users/signUp', async ({ email, password, name }, {extra}) => {
+  const { data: userData, error: signupError} = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      data: {
-        username: name,
-        userType: 'user',
-        favorites: [],
-      },
-    },
   });
 
-  if (error) {
-    throw error;
+  if (signupError) {
+    throw signupError;
   }
 
-  return adaptUserDataToClient(data.user?.user_metadata as CreateUserDTO);
+  console.log(userData)
+
+  const { data, error: insertError } = await supabase
+    .from(PROFILES_TABLE)
+    .insert({
+    id: userData.user?.id,
+    userType: 'user',
+    name: name,
+    favorites: [],
+  })
+
+  if (insertError) {
+    throw insertError;
+  }
+
+  console.log(data)
+  saveToken(userData.session?.access_token as string);
+
+  extra.history.push(AppRoute.Root);
+  
+  return adaptUserDataToClient(data as unknown as CreateUserDTO);
 });
 
 export const signIn = createAsyncThunk<
   UserData,
-  { email: string; password: string }
->('users/signIn', async ({ email, password }) => {
-  const { data, error } = await supabase.auth.signInWithPassword({
+  { email: string; password: string },
+  { extra: Extra }
+>(
+  'users/signIn',
+  async ({ email, password }, { extra }) => {
+  const { data: userData, error: signInError } = await supabase.auth.signInWithPassword({
     email: email,
     password: password,
   });
 
-  if (error) {
-    console.error('Ошибка при входе:', error.message);
-    throw error;
+  if (signInError) {
+    console.error('Ошибка при входе:', signInError.message);
+    throw signInError;
   }
 
-  console.log('Успешный вход:', data);
-  return data;
+  const { data, error: insertError } = await supabase
+  .from(PROFILES_TABLE)
+  .select('*')
+  .eq('id', userData.user.id);
+
+  if (insertError) {
+    throw insertError;
+  }
+
+  extra.history.push(AppRoute.Root);
+
+  return adaptUserDataToClient(data[0] as unknown as CreateUserDTO);
 });
 
 //ToDo: Перенести в типы
@@ -235,6 +274,32 @@ type UploadURLType = {
   id: string;
   path: string;
 };
+
+export const getUserStatus = createAsyncThunk<UserData, string>(
+  'users/get',
+  async (accessToken) => {
+
+    console.log('accessToken ' + accessToken)
+    const { data: userData, error: signError } = await supabase.auth.getUser(accessToken);
+
+    if (signError) {
+      throw signError;
+    }
+    console.log(userData.user.id)
+    const { data, error: insertError } = await supabase
+    .from(PROFILES_TABLE)
+    .select('*')
+    .eq('id', userData.user.id);
+
+    if (insertError) {
+      throw insertError;
+    }
+
+   console.log(data[0])
+  
+    return adaptUserDataToClient(data[0] as unknown as CreateUserDTO);
+  }
+)
 
 export const uploadFile = createAsyncThunk<UploadURLType, RcFile>(
   'file/upload',
@@ -252,3 +317,15 @@ export const uploadFile = createAsyncThunk<UploadURLType, RcFile>(
     }
   }
 );
+
+export const updateUserFavoritesList = createAsyncThunk<UserData, { albumId: string, userId: string }>(
+  'users/updates',
+  async({albumId, userId}) => {
+    const { data, error } = await supabase.rpc('toggle_favorite_album', { user_id: userId, album_id: albumId });
+
+    if (error) throw error;
+
+    console.log(data)
+    return data;
+  }
+)

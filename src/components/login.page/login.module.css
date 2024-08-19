@@ -31,9 +31,18 @@
   margin-top: 0;
 }
 
+.buttonWrapper {
+  display: flex;
+  gap: 10px;
+}
+
 .button {
   margin: 15px 0 10px;
   color: var(--invert-text-color);
   background-color: var(--secondary);
+}
+
+.linkButton {
+  margin: 15px 0 10px;
 }
 

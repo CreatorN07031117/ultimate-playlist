@@ -3,22 +3,27 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, Outlet } from 'react-router-dom';
 import {UserOutlined} from '@ant-design/icons';
 
+import { logOut } from '../../store/user-data/user-data';
+import { dropToken } from '../../helpers/token-functions';
+import { UserType } from '../../types/enums';
 import { AppRoute } from '../../const';
-import type { AppDispatch, State, User } from '../../types/state';
+import type { State, User } from '../../types/state';
 import logo from './logo.png'
 import s from './header.module.css';
 
-
 export const Header = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const user: User = useSelector((state:State) => state.USER_DATA);
+  const dispatch = useDispatch();
 
-  /* Заменяется на данные */
   const isAuthorized = user.authorizationStatus;
+
+  const handleLogOut = () => {
+    dropToken();
+    dispatch(logOut())
+  }
 
   return (
     <>
-      {console.log(user)}
       <header className={s.header}>
         <div className={s.headerLogo}>
           <Link to="/">
@@ -29,11 +34,11 @@ export const Header = () => {
           <ul className={s.headerNavList}>
             {isAuthorized === 'AUTH' ? (
               <>
-              <li className={s.navItem}>
+              {user.user?.type === UserType.editor && (<li className={s.navItem}>
                 <Link className={s.navLink} to={AppRoute.Add}>
                   <span>+ New album</span>
                 </Link>
-              </li>
+              </li>)}
               <li className={s.navItem}>
                 <Link to={AppRoute.Favorites}>
                   <span>Favorites</span>
@@ -44,7 +49,7 @@ export const Header = () => {
                 <span className={s.userName}>{user.user?.name}</span>
               </li>
               <li className={s.navItem}>
-                Log out
+                <button className={s.buttonLink} onClick={handleLogOut}>Log out</button>
               </li>
             </>
           ) : (

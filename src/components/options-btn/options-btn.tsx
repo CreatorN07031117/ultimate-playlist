@@ -1,43 +1,69 @@
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { HeartOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-import { deleteAlbum } from '../../store/actions';
-import { AppDispatch } from '../../types/state';
-import s from './options-btn.module.css';
+import { deleteAlbum, updateUserFavoritesList } from '../../store/actions';
+import { UserType } from '../../types/enums';
 import { AppRoute } from '../../const';
+import { AppDispatch, State, User } from '../../types/state';
+import s from './options-btn.module.css';
 
 type Props = {
-  option?: 'album'
+  option?: 'album';
   albumId: string;
-}
+};
 
 export const OptionsBtn = (props: Props) => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const user: User = useSelector((state: State) => state.USER_DATA);
 
-  const clickFavoriteBtnHandler = () => {};
-  const clickEditAlbumBtnHandler = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  async function clickFavoriteBtnHandler (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, userId: string, albumId: string) {
     event.preventDefault();
     event.stopPropagation();
-    navigate(`${AppRoute.Album}/${props.albumId}${AppRoute.Edit}`)};
-  async function  clickDeleteAlbumBtnHandler (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) {
-    event.preventDefault();
-    event.stopPropagation();
-    const result = await dispatch(deleteAlbum(id))
-
-      if(result === null) {window.alert('Ошибка при удалении');} else {
-        window.alert(`Альбом id ${id} удален`);
-      }
+    await dispatch(updateUserFavoritesList({userId, albumId}))
   };
+  const clickEditAlbumBtnHandler = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    navigate(`${AppRoute.Album}/${props.albumId}${AppRoute.Edit}`);
+  };
+  async function clickDeleteAlbumBtnHandler(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    id: string
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+    const result = await dispatch(deleteAlbum(id));
 
+    if (result === null) {
+      window.alert('Ошибка при удалении');
+    } else {
+      window.alert(`Альбом id ${id} удален`);
+    }
+  }
 
   return (
     <div className={s.options} data-custom={props.option}>
-      <button className={s.favoriteBtn} onClick={clickFavoriteBtnHandler}><HeartOutlined className={s.btnIcon} /></button>
-      <button className={s.editAlbumBtn} onClick={clickEditAlbumBtnHandler}><EditOutlined className={s.btnIcon} /></button>
-      <button className={s.deleteAlbumBtn} onClick={(event) => clickDeleteAlbumBtnHandler(event, props.albumId)}><DeleteOutlined className={s.btnIcon} /></button>
+      <button className={s.favoriteBtn} onClick={(event) => clickFavoriteBtnHandler(event, 'a9ac38f3-dbc1-46e4-bc06-11c4c3b3528e', props.albumId)}>
+        <HeartOutlined className={s.btnIcon} />
+      </button>
+      {user.user?.type === UserType.editor && (
+        <button className={s.editAlbumBtn} onClick={clickEditAlbumBtnHandler}>
+          <EditOutlined className={s.btnIcon} />
+        </button>
+      )}
+      {user.user?.type === UserType.editor && (
+        <button
+          className={s.deleteAlbumBtn}
+          onClick={(event) => clickDeleteAlbumBtnHandler(event, props.albumId)}
+        >
+          <DeleteOutlined className={s.btnIcon} />
+        </button>
+      )}
     </div>
-  )
-}
+  );
+};

@@ -1,13 +1,18 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { Input, Form, Button } from "antd";
-import { EyeInvisibleOutlined, EyeTwoTone, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { Input, Form, Button } from 'antd';
+import {
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+  MailOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+
 import { registerUser } from '../../store/actions';
+import { AppRoute } from '../../const';
+import type { AppDispatch } from '../../types/state';
 import s from './register.module.css';
-
-import { AppDispatch } from '../../types/state';
-
 
 const Register = (): JSX.Element => {
   const [form] = Form.useForm();
@@ -16,17 +21,15 @@ const Register = (): JSX.Element => {
 
   const handleFormSubmit = (values) => {
     dispatch(registerUser(values));
-    navigate('/');
   };
 
- 
   return (
-  <main>
-    <div className={s.registerWrapper}>
-      <section className={s.registerSection}>
-        <h1 className={s.userFormTitle}>Sign up</h1>
-        <Form form={form} onFinish={handleFormSubmit}>
-          <label className="visually-hidden">Name</label>
+    <main>
+      <div className={s.registerWrapper}>
+        <section className={s.registerSection}>
+          <h1 className={s.userFormTitle}>Sign up</h1>
+          <Form form={form} onFinish={handleFormSubmit}>
+            <label className="visually-hidden">Name</label>
             <Form.Item name="name">
               <Input
                 size="large"
@@ -51,22 +54,33 @@ const Register = (): JSX.Element => {
               <Input.Password
                 size="large"
                 placeholder="input password"
-                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
                 required
                 minLength={6}
                 maxLength={12}
               />
             </Form.Item>
-            <Button
-              className={s.button}
-              htmlType="submit"
-            >
-              Sign up
-            </Button>
-        </Form>
-      </section>
-    </div>
-  </main> 
-)}
+            <div className={s.buttonWrapper}>
+              <Button className={s.button} htmlType="submit">
+                Sign up
+              </Button>
+              <Button
+                className={s.linkButton}
+                htmlType="button"
+                onClick={() => {
+                  navigate(AppRoute.Login);
+                }}
+              >
+                Sign in
+              </Button>
+            </div>
+          </Form>
+        </section>
+      </div>
+    </main>
+  );
+};
 
 export default Register;

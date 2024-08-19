@@ -8,7 +8,7 @@ export const AlbumFormat = {
 
 export type AlbumFormat = typeof AlbumFormat[keyof typeof AlbumFormat];
 
-const UserType = {
+export const UserType = {
   user: 'user',
   editor: 'editor',
 } as const;
