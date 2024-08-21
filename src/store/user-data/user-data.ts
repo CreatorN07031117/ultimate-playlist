@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { User } from '../../types/state';
-import { getUserStatus, registerUser, signIn } from '../actions';
+import { getUserStatus, registerUser, signIn, updateUserFavoritesList } from '../actions';
 import { AuthorizationStatus, StoreSlice } from '../../types/enums';
 
 const initialState: User = {
@@ -46,6 +46,11 @@ export const userProcess = createSlice({
       .addCase(getUserStatus.rejected, (state) => {
         state.authorizationStatus = AuthorizationStatus.noAuth;
         state.user = null;
+      })
+      .addCase(updateUserFavoritesList.fulfilled, (state, action) => {
+        if(state.user !== null) {
+          state.user.favorites = action.payload;
+        }
       })
   }
 });

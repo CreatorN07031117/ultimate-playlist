@@ -93,6 +93,8 @@ export const fetchAlbumById = createAsyncThunk<Album, string>(
     if (error) {
       throw error;
     }
+
+    console.log(data)
     return data[0];
   }
 );
@@ -106,7 +108,6 @@ export const addAlbum = createAsyncThunk<string, Album>(
       throw error;
     }
 
-    console.log(data);
     return 'success';
   }
 );
@@ -214,8 +215,6 @@ export const registerUser = createAsyncThunk<
     throw signupError;
   }
 
-  console.log(userData)
-
   const { data, error: insertError } = await supabase
     .from(PROFILES_TABLE)
     .insert({
@@ -318,14 +317,13 @@ export const uploadFile = createAsyncThunk<UploadURLType, RcFile>(
   }
 );
 
-export const updateUserFavoritesList = createAsyncThunk<UserData, { albumId: string, userId: string }>(
+export const updateUserFavoritesList = createAsyncThunk<string[], { albumId: string, userId: string }>(
   'users/updates',
   async({albumId, userId}) => {
-    const { data, error } = await supabase.rpc('toggle_favorite_album', { user_id: userId, album_id: albumId });
+    const { data, error } =  await supabase.rpc('toggle_favorite_album', { user_id: userId, album_id: albumId });
 
     if (error) throw error;
 
-    console.log(data)
     return data;
   }
 )

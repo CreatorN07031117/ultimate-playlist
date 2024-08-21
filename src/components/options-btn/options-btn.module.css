@@ -50,6 +50,13 @@ button.deleteAlbumBtn:hover {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+button.favoriteBtn:focus,
+button.editAlbumBtn:focus ,
+button.deleteAlbumBtn:focus {
+  outline: none;
+} 
+
+
 .btnIcon {
   width: 20px;
   height: 30px;
@@ -64,6 +71,10 @@ button.deleteAlbumBtn:hover {
     color: rgba(255, 255, 255, 0.6);
     font-size: 18px;
   }
+}
+
+.btnIconFilled {
+  color: rgba(255, 255, 255, 1);
 }
 
 .btnIcon:hover {

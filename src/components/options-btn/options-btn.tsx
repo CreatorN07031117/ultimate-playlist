@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { HeartOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { HeartOutlined, EditOutlined, DeleteOutlined, HeartFilled } from '@ant-design/icons';
 
 import { deleteAlbum, updateUserFavoritesList } from '../../store/actions';
 import { UserType } from '../../types/enums';
@@ -20,17 +20,20 @@ export const OptionsBtn = (props: Props) => {
   const user: User = useSelector((state: State) => state.USER_DATA);
 
   async function clickFavoriteBtnHandler (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, userId: string, albumId: string) {
+    console.log('ffsdsd')
     event.preventDefault();
     event.stopPropagation();
     await dispatch(updateUserFavoritesList({userId, albumId}))
   };
-  const clickEditAlbumBtnHandler = (
+
+  function clickEditAlbumBtnHandler (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  ) {
     event.preventDefault();
     event.stopPropagation();
     navigate(`${AppRoute.Album}/${props.albumId}${AppRoute.Edit}`);
   };
+
   async function clickDeleteAlbumBtnHandler(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     id: string
@@ -46,10 +49,14 @@ export const OptionsBtn = (props: Props) => {
     }
   }
 
+  const isFavorite = user.user?.favorites.includes(String(props.albumId)) ?? false;
+
   return (
     <div className={s.options} data-custom={props.option}>
       <button className={s.favoriteBtn} onClick={(event) => clickFavoriteBtnHandler(event, 'a9ac38f3-dbc1-46e4-bc06-11c4c3b3528e', props.albumId)}>
-        <HeartOutlined className={s.btnIcon} />
+        {isFavorite ? <HeartFilled className={s.btnIconFilled} /> 
+        : <HeartOutlined className={s.btnIcon} />
+        }
       </button>
       {user.user?.type === UserType.editor && (
         <button className={s.editAlbumBtn} onClick={clickEditAlbumBtnHandler}>

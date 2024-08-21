@@ -5,6 +5,8 @@ import { Tag } from "antd";
 import { OptionsBtn } from '../options-btn/options-btn';
 import type { Album } from '../../types/types';
 import s from './card.module.css';
+import { useSelector } from 'react-redux';
+import type { State } from '../../types/state';
 
 type Props = {
   album: Album;

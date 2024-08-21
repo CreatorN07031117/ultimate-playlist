@@ -1,13 +1,11 @@
-import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {Link, useParams, useLocation} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import { getCurrentPage } from '../../store/site-process/site-process';
 import type { AppDispatch, State } from '../../types/state';
 import s from './pagination.module.css';
 
 export const Pagination = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const params = useParams();
   const location = useLocation();
 
   const {pages, currentPage} = useSelector((state:State) => state.SITE_PROCESS);
@@ -23,7 +21,7 @@ export const Pagination = () => {
   };
 
   return (
-    <div className={s.pagination}>
+    pages > 1 && (<div className={s.pagination}>
       <ul className={s.paginationList}>
         {currentPage > 1 &&
         <li className={s.paginationPrev} id="prev">
@@ -47,7 +45,7 @@ export const Pagination = () => {
           <Link to={`/${currentPage +1}${location.search}`} className={s.paginationLink}>Далее</Link>
         </li>}
       </ul>
-    </div>
+    </div>)
   )
 }
 
