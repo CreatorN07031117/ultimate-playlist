@@ -9,16 +9,15 @@ import { AppRoute } from '../../const';
 import type { State, User } from '../../types/state';
 import logo from './logo.png'
 import s from './header.module.css';
+import { signOut } from '../../store/actions';
+import store from '../../store';
 
 export const Header = () => {
   const user: User = useSelector((state:State) => state.USER_DATA);
-  const dispatch = useDispatch();
-
   const isAuthorized = user.authorizationStatus;
 
   const handleLogOut = () => {
-    dropToken();
-    dispatch(logOut())
+    store.dispatch(signOut());
   }
 
   return (
