@@ -12,6 +12,7 @@ export function saveToken (token: string) {
 
 export function dropToken () {
   localStorage.removeItem(TOKEN_NAME);
+  console.log(localStorage.getItem(TOKEN_NAME));
 }
 
 

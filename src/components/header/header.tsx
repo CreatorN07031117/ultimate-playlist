@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Outlet } from 'react-router-dom';
 import {UserOutlined} from '@ant-design/icons';

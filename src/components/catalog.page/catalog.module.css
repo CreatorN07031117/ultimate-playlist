@@ -1,3 +1,5 @@
+@import url('../style-const.css');
+
 .catalogWrapper {
   width: 95vw;
 
@@ -8,8 +10,22 @@
   }
 }
 
+.panelWrapper {
+  @media(min-width: 1200px) {
+    width: 1060px;
+  }
+}
+
+.sortingWrapper {
+  margin: 20px 0 20px;
+
+  @media(min-width: 1200px) {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
 .catalog {
-  
   @media(min-width: 1200px) {
     display: grid;
     grid-template-columns: 250px 250px 250px 250px;

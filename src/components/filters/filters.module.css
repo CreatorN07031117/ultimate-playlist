@@ -1,0 +1,18 @@
+@import url('../style-const.css');
+
+.filtersWrapper {
+
+  @media(min-width: 1200px) {
+    width: 1060px;
+  }
+}
+
+.filterBtn {
+  border: 1px solid var(--border-light);
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.filterBtn:last-child {
+  margin-right: 0;
+}

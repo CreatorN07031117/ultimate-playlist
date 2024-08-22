@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
@@ -14,7 +14,6 @@ export const Filters = () => {
 
   const { genres } = useSelector((state: State) => state.SITE_PROCESS);
 
-  // Обработка изменения фильтров
   const handleFilterChange = (filterName: string, value: string) => {
     const updatedFilters = {
       ...filters,
@@ -27,7 +26,6 @@ export const Filters = () => {
       pageNumber: 1
     }));
 
-    // Обновление URL с новыми фильтрами
     const searchParams = new URLSearchParams(updatedFilters).toString();
     navigate(`${location.pathname}?${searchParams}`);
   };
@@ -35,7 +33,7 @@ export const Filters = () => {
   return (
     <div className={s.filtersWrapper}>
       {genres.map((genre) => (
-        <button key={genre} onClick={() => handleFilterChange('genre', genre)}>
+        <button key={genre} className={s.filterBtn} onClick={() => handleFilterChange('genre', genre)}>
           {genre}
         </button>
       ))}
