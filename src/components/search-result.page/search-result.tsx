@@ -20,7 +20,6 @@ export const SearchResult = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (searchText !== null) {
-        console.log('gdg')
         try {
           const result = await dispatch(searchAlbums(searchText)).unwrap();
           if (result) {

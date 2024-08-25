@@ -1,5 +1,4 @@
-import React from "react";
-import img from './404.png';
+import img from '../../assets/404.png';
 import s from './not-found.module.css';
 
 const NotFound = (): JSX.Element => (

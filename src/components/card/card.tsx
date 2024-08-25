@@ -5,8 +5,6 @@ import { Tag } from "antd";
 import { OptionsBtn } from '../options-btn/options-btn';
 import type { Album } from '../../types/types';
 import s from './card.module.css';
-import { useSelector } from 'react-redux';
-import type { State } from '../../types/state';
 
 type Props = {
   album: Album;
@@ -35,7 +33,6 @@ export const Card = ({album}: Props) => {
           <div className={s.songsInfo}>{album.qtySongs} songs</div>
           <div className={s.releaseYear}>{new Date(album.releaseDate).getFullYear()}</div>
         </div>
-        <div className={s.genresWrapper}>{album.genres.map((genre) => (<Tag color={'rgb(91, 106, 109)'}>{genre}</Tag>))}</div>
       </div>
       
     </article>

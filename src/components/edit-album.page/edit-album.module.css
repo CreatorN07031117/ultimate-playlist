@@ -1,11 +1,10 @@
 @import url('../style-const.css');
 
 .root {
-  width: 95vw;
   box-sizing: border-box;
 }
 
-.newAlbumWrapper {
+.albumWrapper {
   padding: 20px 20px 25px;
   background-color: var(--color-background);
   box-sizing: border-box;

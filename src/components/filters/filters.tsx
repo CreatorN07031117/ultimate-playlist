@@ -7,20 +7,16 @@ import type { AppDispatch, State } from '../../types/state';
 import s from './filters.module.css';
 
 export const Filters = () => {
-  const [filters, setFilters] = useState({});
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const location = useLocation();
-
   const { genres } = useSelector((state: State) => state.SITE_PROCESS);
 
   const handleFilterChange = (filterName: string, value: string) => {
     const updatedFilters = {
-      ...filters,
       [filterName]: value,
     };
 
-    setFilters(updatedFilters);
     dispatch(fetchFilteredAlbums({
       genre: updatedFilters.genre,
       pageNumber: 1

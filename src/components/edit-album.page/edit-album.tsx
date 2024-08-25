@@ -12,6 +12,7 @@ import type { AppDispatch, State } from '../../types/state';
 import { AlbumFormat } from '../../types/enums';
 import { IMG_UPLOAD_URL } from '../../const';
 import s from './edit-album.module.css';
+import { Loader } from '../loader/loader';
 
 
 type UploadURLType = {
@@ -49,7 +50,6 @@ const EditAlbum = (): JSX.Element => {
   }));
 
   async function handleFormSubmit(values) {
-    console.log(values)
     const albumData = {
       ...values,
       coverImg: `https://nfejynuraifmrtmngcaa.supabase.co/storage/v1/object/public/${uploadUrl}`,
@@ -72,13 +72,14 @@ const EditAlbum = (): JSX.Element => {
   }
 
   if (!albumState || genres.length === 0) {
-    return <div>Loading...</div>;
+    return <Loader />
   }
 
   return (
     <div className={s.root}>
       {errorMessage && <Alert message={errorMessage} type="error" />}
-      <div className={s.newAlbumWrapper}>
+      <div className={s.albumWrapper}>
+      <h1>Edit album: {albumState.name} | {albumState.musician}</h1>
         <div className={s.formWrapper}>
           <Form
             form={form}
@@ -91,9 +92,9 @@ const EditAlbum = (): JSX.Element => {
               musician: albumState.musician,
               description: albumState.description,
               releaseDate: moment(albumState.releaseDate),
- 
             }} 
           >
+            <label>Album's title</label>
             <Form.Item name="name">
               <Input
                 size="large"
@@ -103,6 +104,7 @@ const EditAlbum = (): JSX.Element => {
                 maxLength={50}
               />
             </Form.Item>
+            <label>Who is the artist of the album</label>
             <Form.Item name="musician">
               <Input
                 size="large"
@@ -112,15 +114,19 @@ const EditAlbum = (): JSX.Element => {
                 maxLength={50}
               />
             </Form.Item>
+            <label>Genres:</label>
             <Form.Item name="genres">
               <Checkbox.Group options={genreOptions} />
             </Form.Item>
+            <label>Release Date</label>
             <Form.Item name="releaseDate">
               <DatePicker />
             </Form.Item>
+            <label>How many songs</label>
             <Form.Item name="qtySongs">
               <InputNumber min={1} max={20} />
             </Form.Item>
+            <label>Download cover for album</label>
             <Form.Item name="coverImg">
               <Upload
                 action={uploadUrl as unknown as string}
@@ -136,9 +142,11 @@ const EditAlbum = (): JSX.Element => {
                 {uploadStatus === 'prepared' && <Button icon={<UploadOutlined />}>Upload</Button>}
               </Upload>
             </Form.Item>
+            <label>Description</label>
             <Form.Item name="description">
               <TextArea rows={8} />
             </Form.Item>
+            <label>What formats does album has:</label>
             <Form.Item name="format">
               <Checkbox.Group options={albumFormatOptions} />
             </Form.Item>

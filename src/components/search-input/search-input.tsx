@@ -1,7 +1,8 @@
-import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input} from 'antd';
+
 import { AppRoute } from '../../const';
+import s from './search-input.module.css';
 
 export const SearchInput = () => {
   const { Search } = Input;
@@ -14,14 +15,11 @@ export const SearchInput = () => {
   };
   
   return (
-    <div>
+    <div className={s.searchWrapper}>
       <Search
         placeholder="input search text"
         onSearch={onSearch}
         allowClear
-        style={{
-          width: 200,
-        }}
       />
     </div>
   );

@@ -1,24 +1,67 @@
+@import url('../style-const.css');
+
 .header {
+  position: relative;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   padding: 20px 20px;
+  height: fit-content;
+
+  @media(min-width: 1200px) {
+    flex-direction: row;
+  }
+}
+
+.headerWrapper {
+  display: flex;
+  justify-content: space-between;
 }
 
 .logoWrapper {
   width: 100%;
 }
 
+.headerNavHidden {
+  display: none;
+}
+
+.mobileNavWrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 3;
+  width: calc(100% - 40px);
+  padding: 20px;
+  padding-top: 40px;
+  margin-left: 30px;
+  background-color: var( --color-background);
+}
 
 .headerNavList {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  margin-bottom: 0;
+  padding-inline-start: 0;
   gap: 20px;
   list-style-type: none;
+
+  @media(min-width: 1200px) {
+    flex-direction: row;
+  }
 }
 
 .navItem a {
   color: #213547;
   font-weight: 600;
+}
+
+.navItem:has(.userName) {
+  order: -3;
+
+  @media(min-width: 1200px) {
+    order: 0;
+  }
 }
 
 .userName {
@@ -28,6 +71,7 @@
 .buttonLink {
   padding: 0;
   border: none;
+  background-color: transparent;
 }
 
 .buttonLink:focus, .buttonLink:focus-visible {
@@ -36,4 +80,9 @@
 
 .buttonLink:hover {
   color: #646cff;
+}
+
+.hamburger {
+  position: relative;
+  z-index: 4;
 }

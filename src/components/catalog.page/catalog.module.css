@@ -1,8 +1,6 @@
 @import url('../style-const.css');
 
 .catalogWrapper {
-  width: 95vw;
-
   @media(min-width: 1200px) {
     display: flex;
     flex-direction: column;
@@ -10,7 +8,18 @@
   }
 }
 
+.catalogHeader {
+  padding: 0 20px;
+
+  @media(min-width: 1200px) {
+    padding: 0;
+  }
+}
+
 .panelWrapper {
+  width: calc(100% - 40px);
+  padding: 0 20px;
+
   @media(min-width: 1200px) {
     width: 1060px;
   }
@@ -19,9 +28,27 @@
 .sortingWrapper {
   margin: 20px 0 20px;
 
-  @media(min-width: 1200px) {
+  @media(min-width: 480px) {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.searchInputWrapper {
+  width: 100%;
+
+  @media(min-width: 480px) {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.dropdownWrapper {
+  margin-top: 10px;
+
+  @media(min-width: 480px) {
+    margin-top: 0;
   }
 }
 

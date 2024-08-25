@@ -12,11 +12,13 @@ import { formatDate } from '../../helpers/format-date';
 import type { Album as AlbumType, AppDispatch } from '../../types/types';
 import type { State } from '../../types/state'
 import s from './album.module.css';
+import { Loader } from '../loader/loader';
 
 
 
 const Album = () => {
   const params = useParams();
+  const isAlbumLoading = useSelector((state: State) => state.SITE_PROCESS.isAlbumLoading)
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
@@ -27,6 +29,10 @@ const Album = () => {
   }, [params, dispatch]);
 
   const album = useSelector((state:State) => state.SITE_PROCESS.album);
+
+  if (isAlbumLoading) {
+    return <Loader />
+  }
 
   return (
     <article className={s.albumWrapper}>

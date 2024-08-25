@@ -5,6 +5,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { RcFile } from 'antd/es/upload';
 import { UploadOutlined } from '@ant-design/icons';
 
+import { Loader } from '../loader/loader';
 import {uploadFile, addAlbum} from '../../store/actions';
 import type { AppDispatch, State } from '../../types/state';
 import { AlbumFormat } from '../../types/enums';
@@ -37,35 +38,28 @@ const NewAlbum = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
 
   async function handleFormSubmit (values) {
-    const newAlbum = {...values, coverImg: `https://nfejynuraifmrtmngcaa.supabase.co/storage/v1/object/public/${uploadUrl}`, description: [values.description]}
-    console.log(newAlbum)
+    const newAlbum = {
+      ...values, 
+      coverImg: `https://nfejynuraifmrtmngcaa.supabase.co/storage/v1/object/public/${uploadUrl}`,
+      description: [values.description]
+    }
+      console.log(newAlbum)
     const result = await dispatch(addAlbum(newAlbum)).unwrap();
     if(result === 'success') {
       return setSubmitState({ successVisible: true })}
     } 
 
-  const handleChange = () => {
-
-  }
-
-  const handleDataChange = () => {
-
-  }
-
-  const handleQuantityChange = () => {
-
-  }
-
   async function handleBeforeUpload(file: RcFile, ) {
     console.log(file);
     const signedUrl:UploadURLType = await dispatch(uploadFile(file)).unwrap();
+    console.log(signedUrl.fullPath);
     setUploadUrl(signedUrl.fullPath);
     return false;
   }
 
 
   if (genres.length === 0) {
-    return <div>Loading...</div>
+    return <Loader />
   }
   
   return (
@@ -73,8 +67,14 @@ const NewAlbum = (): JSX.Element => {
       <div className={s.newAlbumWrapper}>
     <h1>Create new album</h1>
     <div className={s.formWrapper}>
-      <Form form={form} onFinish={handleFormSubmit}>
-        <label className="visually-hidden">Album's title</label>
+      <Form 
+        form={form}
+        onFinish={handleFormSubmit}
+        initialValues={{
+          qtySongs: 6,
+        }}
+      >
+        <label>Album's title</label>
         <Form.Item name="name">
           <Input
             size="large"
@@ -84,7 +84,7 @@ const NewAlbum = (): JSX.Element => {
             maxLength={50}
           />
         </Form.Item>
-        <label className="visually-hidden">Who is the artist of the album</label>
+        <label>Who is the artist of the album</label>
         <Form.Item name="musician">
           <Input
             size="large"
@@ -94,19 +94,19 @@ const NewAlbum = (): JSX.Element => {
             maxLength={50}
           />
         </Form.Item>
-        <label className="visually-hidden">Genres</label>
+        <label>Genres:</label>
         <Form.Item name="genres">
-          <Checkbox.Group options={genreOptions} defaultValue={['Music genre']}  onChange={handleChange} />
+          <Checkbox.Group options={genreOptions} defaultValue={['Music genre']} />
         </Form.Item>
-        <label className="visually-hidden">Release Date</label>
+        <label>Release Date</label>
         <Form.Item name="releaseDate">
-          <DatePicker onChange={handleDataChange} />
+          <DatePicker />
         </Form.Item>
-        <label className="visually-hidden">How many songs</label>
+        <label>How many songs</label>
         <Form.Item name="qtySongs">
-          <InputNumber min={1} max={20} defaultValue={6} onChange={handleQuantityChange} />
+          <InputNumber min={1} max={20} />
         </Form.Item>
-        <label className="visually-hidden">Download cover for album</label>
+        <label>Download cover for album</label>
         <Form.Item name="coverImg">
           <Upload
             action={uploadUrl as unknown as string}
@@ -123,13 +123,13 @@ const NewAlbum = (): JSX.Element => {
             {uploadStatus === 'prepared' && <Button icon={<UploadOutlined />}>Upload</Button>}
           </Upload>
         </Form.Item>
-        <label className="visually-hidden">Description</label>
+        <label>Description</label>
         <Form.Item name="description">
           <TextArea rows={8} />
         </Form.Item>
-        <label className="visually-hidden">What formats does album has:</label>
+        <label>What formats does album has:</label>
         <Form.Item name="format">
-          <Checkbox.Group options={albumFormatOptions} defaultValue={['Album formats']}  onChange={handleChange} />
+          <Checkbox.Group options={albumFormatOptions} defaultValue={['Album formats']} />
         </Form.Item>
         <Button
               className={s.button}

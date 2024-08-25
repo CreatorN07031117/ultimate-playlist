@@ -14,6 +14,7 @@ import store from '../../store/index';
 import type { Album } from '../../types/types';
 import type { State } from '../../types/state';
 import s from './catalog.module.css';
+import { Loader } from '../loader/loader';
 
 const Catalog = (): JSX.Element => {
   const isAlbumsLoading = useSelector((state: State) => state.SITE_PROCESS.isAlbumsLoading);
@@ -62,24 +63,27 @@ const Catalog = (): JSX.Element => {
   const items = [{
       key: 'early',
       label: (<span className={s.sorting}>early → late</span>),
+      text: 'early → late'
     }, {
       key: 'late',
       label: (<span className={s.sorting}>late → early</span>),
+      text: 'late → early'
     }
   ]
 
   if (isAlbumsLoading) {
-    return <div>Loading...</div>
+    return <Loader />
   }
   
   return (
   <div className={s.catalogWrapper}>
-    <h1>{`Albums${isFiltered ?  `: ${filters.genres}` : ''}`}</h1>
+    <h1 className={s.catalogHeader}>{`Albums${isFiltered ?  `: ${filters.genres}` : ''}`}</h1>
     <div className={s.panelWrapper}>
       <Filters />
       <div className={s.sortingWrapper}>
         <SearchInput />
-        <Dropdown
+        <div className={s.dropdownWrapper}>
+          <Dropdown
             menu={{
               items,
               onClick: handleSortingClick,
@@ -87,11 +91,12 @@ const Catalog = (): JSX.Element => {
         >
           <a onClick={(e) => e.preventDefault()}>
             <Space>
-              Sorted
+              Sorted {sortingType !== '' && `: ${items[items.findIndex((i) => i.key === sortingType)].text}`}
               <DownOutlined />
             </Space>
           </a>
-        </Dropdown>
+          </Dropdown>
+        </div>
       </div>
     </div>
     <div className={s.catalog}>
