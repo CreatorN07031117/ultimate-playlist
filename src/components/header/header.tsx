@@ -35,6 +35,7 @@ export const Header = () => {
   }, []);
 
   const handleLogOut = () => {
+    setIsOpen(false);
     store.dispatch(signOut());
   };
 
@@ -47,7 +48,7 @@ export const Header = () => {
               <img src={logo} width="70" />
             </Link>
           </div>
-          {isAuthorized === 'AUTH'  && isMobile && (
+          {isAuthorized === 'AUTH' && isMobile && (
             <div className={s.hamburger}>
               {isOpen ? (
                 <CloseOutlined style={{ fontSize: '24px' }} onClick={() => setIsOpen(false)} />
@@ -56,6 +57,13 @@ export const Header = () => {
               )}
             </div>
           )}
+          {
+           isAuthorized === 'NO_AUTH' && isMobile && (
+            <div className={s.loginWrapper}>
+              <Link to={AppRoute.Login}>Login</Link>
+            </div>
+           )
+          }
         </div>
         <nav className={classNames(s.headerNavWrapper, isMobile && isAuthorized && s.mobileNavWrapper, isMobile && isAuthorized &&!isOpen && s.headerNavHidden)}>
           <ul className={s.headerNavList}>

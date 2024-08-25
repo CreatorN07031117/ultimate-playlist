@@ -20,7 +20,6 @@ export const OptionsBtn = (props: Props) => {
   const user: User = useSelector((state: State) => state.USER_DATA);
 
   async function clickFavoriteBtnHandler (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, userId: string, albumId: string) {
-    console.log('ffsdsd')
     event.preventDefault();
     event.stopPropagation();
     await dispatch(updateUserFavoritesList({userId, albumId}))
@@ -51,6 +50,10 @@ export const OptionsBtn = (props: Props) => {
 
   const isFavorite = user.user?.favorites.includes(String(props.albumId)) ?? false;
 
+  if(user.authorizationStatus !== "AUTH"){
+    return;
+  }
+
   return (
     <div className={s.options} data-custom={props.option}>
       <button className={s.favoriteBtn} onClick={(event) => clickFavoriteBtnHandler(event, 'a9ac38f3-dbc1-46e4-bc06-11c4c3b3528e', props.albumId)}>
@@ -72,5 +75,5 @@ export const OptionsBtn = (props: Props) => {
         </button>
       )}
     </div>
-  );
+  )
 };

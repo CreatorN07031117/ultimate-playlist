@@ -14,6 +14,8 @@ import { AppRoute, AuthorizationStatus } from '../../const';
 
 import './app.module.css'
 import { SearchResult } from '../search-result.page/search-result';
+import { Loader } from '../loader/loader';
+import { Footer } from '../footer/footer';
 
 const App = (): JSX.Element => {
 
@@ -25,6 +27,7 @@ const App = (): JSX.Element => {
         <Route path='/:id' element={<Catalog />} />
         <Route path={`${AppRoute.Album}/:id`} element={<Album />} />
         <Route path={`${AppRoute.Search}`} element={<SearchResult />} />
+        <Route path='/loader' element={<Loader />} />
         <Route
           path={`${AppRoute.Album}/:id${AppRoute.Edit}`}
           element={
@@ -58,6 +61,7 @@ const App = (): JSX.Element => {
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
+    <Footer />
   </BrowserRouter>
 )};
 

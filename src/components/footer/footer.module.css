@@ -1,0 +1,9 @@
+@import url('../style-const.css');
+
+.footerWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0 30px;
+  background-color: #001825;
+  color: white;
+}

@@ -93,21 +93,24 @@ export const fetchAlbumById = createAsyncThunk<Album, string>(
       throw error;
     }
 
-    console.log(data);
     return data[0];
   }
 );
 
-export const addAlbum = createAsyncThunk<string, Album>(
+export const addAlbum = createAsyncThunk<Album, Album, { extra: Extra }>(
   'albums/add',
-  async (albumData: Album) => {
-    const { data, error } = await supabase.from(ALBUMS_TABLE).insert(albumData);
+  async (albumData: Album, { extra }) => {
+    const { data, error } = await supabase
+      .from(ALBUMS_TABLE)
+      .insert(albumData)
+      .select();
 
     if (error) {
       throw error;
     }
 
-    return 'success';
+    extra.history.push(`${AppRoute.Album}/${data[0].id}`);
+    return;
   }
 );
 
@@ -191,7 +194,6 @@ export const searchAlbums = createAsyncThunk<Album[], string>(
       return [];
     }
 
-    console.log(data);
     return data;
   }
 );
@@ -284,14 +286,12 @@ type UploadURLType = {
 export const getUserStatus = createAsyncThunk<UserData, string>(
   'users/get',
   async (accessToken) => {
-    console.log('accessToken ' + accessToken);
     const { data: userData, error: signError } =
       await supabase.auth.getUser(accessToken);
 
     if (signError) {
       throw signError;
     }
-    console.log(userData.user.id);
     const { data, error: insertError } = await supabase
       .from(PROFILES_TABLE)
       .select('*')
@@ -300,8 +300,6 @@ export const getUserStatus = createAsyncThunk<UserData, string>(
     if (insertError) {
       throw insertError;
     }
-
-    console.log(data[0]);
 
     return adaptUserDataToClient(data[0] as unknown as CreateUserDTO);
   }

@@ -1,9 +1,8 @@
-import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { Tag } from "antd";
 
 import { OptionsBtn } from '../options-btn/options-btn';
 import type { Album } from '../../types/types';
+import defaultCover from '../../assets/default-album-cover.jpg'
 import s from './card.module.css';
 
 type Props = {
@@ -17,7 +16,13 @@ export const Card = ({album}: Props) => {
       <Link to={`/album/${album.id}`}>
         <div className={s.albumCoverWrapper}>
           <OptionsBtn albumId={album.id}/>
-          <img className={s.albumCover} src={album.coverImg} alt={`Album's cover "${album.name}"`} width="200" height="200" />
+          <img 
+            className={s.albumCover}
+            src={album.coverImg}
+            alt={`Album's cover "${album.name}"`}
+            width="200" height="200"
+            onError={(e) => e.target.src = defaultCover}
+          />
         </div>
       </Link>
       <div className={s.contentWrapper}>

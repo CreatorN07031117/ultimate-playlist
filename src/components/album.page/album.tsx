@@ -1,18 +1,17 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Tag } from "antd";
-import { HeartOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import { OptionsBtn } from '../options-btn/options-btn';
-import { getAlbum } from '../../store/site-process/selectors';
+import { Loader } from '../loader/loader';
 import { fetchAlbumById } from '../../store/actions';
 import { formatDate } from '../../helpers/format-date';
-
-import type { Album as AlbumType, AppDispatch } from '../../types/types';
+import type { AppDispatch } from '../../types/types';
 import type { State } from '../../types/state'
+import defaultCover from '../../assets/default-album-cover.jpg'
 import s from './album.module.css';
-import { Loader } from '../loader/loader';
+
 
 
 
@@ -50,11 +49,16 @@ const Album = () => {
               <p>{paragraph}</p>
             ))}
           </div>
-          <div className={s.genresWrapper}>{album?.genres.map((genre) => (<Tag color={'rgb(91, 106, 109)'}>{genre}</Tag>))}</div>
+          <div className={s.genresWrapper}>{album?.genres.map((genre) => (<Tag color={'rgb(53, 127, 142)'}>{genre}</Tag>))}</div>
         </div>
         <div className={s.albumCoverWrapper}>
           <OptionsBtn option='album' albumId={album?.id as string}/>
-          <img className={s.albumCover} src={album?.coverImg} alt={`Album's cover "${album?.name}"`} />
+          <img
+            className={s.albumCover}
+            src={album?.coverImg}
+            alt={`Album's cover "${album?.name}"`}
+            onError={(e) => e.target.src = defaultCover} 
+          />
         </div>
       </div>
     </article>
