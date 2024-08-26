@@ -18,13 +18,14 @@ const Register = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const handleFormSubmit = (values: {
+  async function handleFormSubmit (values: {
     email: string;
     password: string;
     name: string;
-}) => {
-    dispatch(registerUser(values));
-    navigate(`${AppRoute.Root}`);
+}) {
+    await dispatch(registerUser(values)).unwrap().then(
+      () => navigate(`${AppRoute.Root}`)
+    );
   };
 
   return (

@@ -27,7 +27,8 @@ const Album = () => {
   useEffect(() => {
     const { id } = params;
     if (id) {
-      dispatch(fetchAlbumById(String(id)));
+      dispatch(fetchAlbumById(id))
+        .unwrap() 
     }
   }, [params, dispatch]);
 

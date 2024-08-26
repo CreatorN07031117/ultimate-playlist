@@ -305,20 +305,24 @@ export const signIn = createAsyncThunk<
   } as unknown as CreateUserDTO);
 });
 
-export const signOut = createAsyncThunk<null, undefined, { extra: Extra }>(
-  'users/sighout',
-  async () => {
+export const signOut = createAsyncThunk<
+  null,
+  void,
+  { rejectValue: string }
+>(
+  'users/signout',
+  async (_, { rejectWithValue }) => {
     const { error } = await supabase.auth.signOut();
 
     if (error) {
       toast.error(error.message);
-      throw error;
+      return rejectWithValue(error.message);
     }
+
     dropToken();
     return null;
   }
 );
-
 type UploadURLType = {
   fullPath: string;
   id: string;

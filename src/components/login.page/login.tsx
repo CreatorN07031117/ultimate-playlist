@@ -17,8 +17,8 @@ const Login = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const handleFormSubmit = (values: { email: string; password: string }) => {
-    dispatch(signIn(values));
+  async function handleFormSubmit (values: { email: string; password: string }) {
+    await dispatch(signIn(values));
     navigate('/');
   };
 

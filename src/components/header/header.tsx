@@ -4,13 +4,13 @@ import { Link, Outlet } from 'react-router-dom';
 import { CloseOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 
-import store from '../../store';
 import { signOut } from '../../store/actions';
 import { AppRoute, DESKTOP_WIDTH } from '../../const';
 import { UserType } from '../../types/enums';
 import type { State, User } from '../../types/state';
 import logo from '../../assets/logo.png';
 import s from './header.module.css';
+import { useDispatch } from 'react-redux';
 
 <MenuOutlined />;
 export const Header = () => {
@@ -18,25 +18,21 @@ export const Header = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < DESKTOP_WIDTH);
   const user: User = useSelector((state: State) => state.USER_DATA);
   const isAuthorized = user.authorizationStatus;
+  const dispatch = useDispatch();
 
   useLayoutEffect(() => {
-    // Функция для обновления ширины экрана
     const handleResize = () => {
       setIsMobile(window.innerWidth < DESKTOP_WIDTH);
     };
-
-    // Подписываемся на событие изменения размера окна
     window.addEventListener('resize', handleResize);
-
-    // Очищаем подписку при размонтировании компонента
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
 
-  const handleLogOut = () => {
+  function handleLogOut () {
     setIsOpen(false);
-    store.dispatch(signOut());
+    dispatch(signOut()).unwrap() ;
   };
 
   return (

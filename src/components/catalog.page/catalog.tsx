@@ -43,7 +43,7 @@ const Catalog = (): JSX.Element => {
     } else if(location.search === ''){
       dispatch(fetchAlbumsForPage({
         pageNumber: 1,
-        sortingType
+        sortingType,
       }));
     } else {
       dispatch(getCurrentPage(page))
