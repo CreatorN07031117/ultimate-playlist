@@ -24,35 +24,39 @@ const Catalog = (): JSX.Element => {
 
   useEffect(() => {
 
-    const page = location.pathname.replace('/', '');
+    const page = location.search.replace('?page=', '');
     const pageNumber = Number(page) > 0? Number(page) : 1;
 
-    if(location.search) {
+    if(location.search && !location.search.includes('?page=')) {
       const searchParams = new URLSearchParams(location.search);
       const genre = searchParams.get('genre');
+      const filterPage = searchParams.get('page');
       const filters = {
         genre: genre ? decodeURIComponent(genre.replace(/\+/g, ' ')) : null,
       };
-      
+      console.log(store.dispatch(fetchFilteredAlbums({
+        genre: filters.genre as string,
+        pageNumber: filterPage? parseInt(filterPage, 10) : 1,
+        sortingType,
+      })))
       store.dispatch(fetchFilteredAlbums({
         genre: filters.genre as string,
-        pageNumber: pageNumber,
+        pageNumber: filterPage? parseInt(filterPage, 10) : 1,
         sortingType,
       }));
-    } else if(location.pathname === '/'){
+    } else if(location.search === ''){
       store.dispatch(fetchAlbumsForPage({
         pageNumber: 1,
         sortingType
       }));
     } else {
-      const page = location.pathname.replace('/', '');
       store.dispatch(getCurrentPage(page))
       store.dispatch(fetchAlbumsForPage({
         pageNumber: pageNumber,
         sortingType
       }));
     }
-  },[location.pathname, sortingType]);
+  },[location.search, sortingType]);
 
 
 

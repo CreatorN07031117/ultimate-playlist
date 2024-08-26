@@ -16,12 +16,14 @@ import TextArea from 'antd/es/input/TextArea';
 import { RcFile } from 'antd/es/upload';
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
 
+import { Loader } from '../loader/loader';
 import { uploadFile, fetchAlbumById, updateAlbum } from '../../store/actions';
 import type { AppDispatch, State } from '../../types/state';
 import { AlbumFormat } from '../../types/enums';
 import { IMG_UPLOAD_URL } from '../../const';
 import s from './edit-album.module.css';
-import { Loader } from '../loader/loader';
+import { Album } from '../../types/types';
+
 
 type UploadURLType = {
   fullPath: string;
@@ -42,9 +44,7 @@ const EditAlbum = (): JSX.Element => {
     'prepared' | 'loading' | 'loaded' | 'error'
   >('loaded');
   const [uploadUrl, setUploadUrl] = useState<string>('');
-  const [submitState, setSubmitState] = useState({
-    successVisible: false,
-  });
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -61,7 +61,8 @@ const EditAlbum = (): JSX.Element => {
     value: format,
   }));
 
-  async function handleFormSubmit(values) {
+  async function handleFormSubmit(values: Album) {
+    setIsLoading(true);
     const albumData = {
       ...values,
       coverImg: `https://nfejynuraifmrtmngcaa.supabase.co/storage/v1/object/public/${uploadUrl}`,
@@ -71,10 +72,10 @@ const EditAlbum = (): JSX.Element => {
       updateAlbum({ albumData: albumData, id: id as string })
     );
     if (updateAlbum.fulfilled.match(result)) {
-      // Успешное выполнение, делаем редирект на страницу компонента
       navigate(`/album/${id}`);
+      setIsLoading(false);
     } else if (updateAlbum.rejected.match(result)) {
-      // Обработка ошибки, показываем Alert с сообщением об ошибке
+      setIsLoading(false);
       setErrorMessage(result.error.message || 'Ошибка при обновлении альбома');
     }
   }
@@ -101,6 +102,7 @@ const EditAlbum = (): JSX.Element => {
     <div className={s.root}>
       {errorMessage && <Alert message={errorMessage} type="error" />}
       <div className={s.albumWrapper}>
+        {console.log(uploadUrl)}
         <h1>
           Edit album: {albumState.name} | {albumState.musician}
         </h1>
@@ -192,6 +194,15 @@ const EditAlbum = (): JSX.Element => {
               Update album
             </Button>
           </Form>
+          {isLoading && (
+            <div className={s.loadingScreen}>
+              <div className={s.loadingIcon}>
+                <LoadingOutlined
+                  className={s.loading}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

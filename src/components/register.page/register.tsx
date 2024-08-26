@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Input, Form, Button } from 'antd';
@@ -19,7 +18,11 @@ const Register = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const handleFormSubmit = (values) => {
+  const handleFormSubmit = (values: {
+    email: string;
+    password: string;
+    name: string;
+}) => {
     dispatch(registerUser(values));
     navigate(`${AppRoute.Root}`);
   };

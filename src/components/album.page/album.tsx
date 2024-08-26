@@ -10,6 +10,7 @@ import { formatDate } from '../../helpers/format-date';
 import type { AppDispatch } from '../../types/types';
 import type { State } from '../../types/state'
 import defaultCover from '../../assets/default-album-cover.jpg'
+
 import s from './album.module.css';
 
 

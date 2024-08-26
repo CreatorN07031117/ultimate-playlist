@@ -11,9 +11,11 @@ export const Pagination = () => {
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
 
-  const { pages, currentPage } = useSelector(
+  const { pages, currentPage, isFiltered } = useSelector(
     (state: State) => state.SITE_PROCESS
   );
+
+  const pre = isFiltered? `/${location.search.replace(`&page=${currentPage}`, '')}&page=` : `/?page=`
 
   const pageNumbers: number[] = [];
 
@@ -32,7 +34,7 @@ export const Pagination = () => {
           {currentPage > 1 && (
             <li className={s.paginationPrev} id="prev">
               <Link
-                to={`/${currentPage - 1}${location.search}`}
+                to={`${pre}${currentPage - 1}`}
                 className={classNames(s.paginationLink, s.paginationLinkNoBorder)}
               >
                 <LeftOutlined />
@@ -54,7 +56,7 @@ export const Pagination = () => {
                 to={
                   item === 1 && location.search === ''
                     ? '/'
-                    : `/${item}${location.search}`
+                    : `${pre}${item}`
                 }
                 className={s.paginationLink}
               >
@@ -65,7 +67,7 @@ export const Pagination = () => {
           {currentPage < pages && (
             <li className={s.paginationNext} id="next">
               <Link
-                to={`/${currentPage + 1}${location.search}`}
+                to={`${pre}${currentPage + 1}`}
                 className={classNames(s.paginationLink, s.paginationLinkNoBorder)}
               >
                 <RightOutlined />
