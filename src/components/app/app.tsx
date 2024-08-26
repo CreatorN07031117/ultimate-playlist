@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Catalog from '../catalog.page/catalog';
@@ -15,6 +16,7 @@ import { AppRoute, AuthorizationStatus } from '../../const';
 import { SearchResult } from '../search-result.page/search-result';
 import { Footer } from '../footer/footer';
 import './app.module.css';
+
 
 const App = (): JSX.Element => {
   return (
@@ -73,6 +75,7 @@ const App = (): JSX.Element => {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
+      <ToastContainer />
       <Footer />
     </BrowserRouter>
   );

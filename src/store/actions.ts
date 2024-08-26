@@ -8,6 +8,7 @@ import type { Album, UserData } from '../types/types';
 import { CreateUserDTO } from '../adapters/user.dto';
 import { ALBUMS_PER_PAGE, AppRoute } from '../const';
 import { dropToken, saveToken } from '../helpers/token-functions';
+import { toast } from 'react-toastify';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -38,7 +39,6 @@ export const getAlbumsCount = createAsyncThunk<number, void>(
   }
 );
 
-//ToDo: Вкрячить внутрь или сдела
 interface FetchAlbumsArgs {
   pageNumber: number;
   sortingType?: string;
@@ -61,6 +61,7 @@ export const fetchAlbumsForPage = createAsyncThunk<Album[], FetchAlbumsArgs>(
     const { data, error } = await fetch;
 
     if (error) {
+      toast.error(error.message);
       throw error;
     }
     return data as Album[];
@@ -73,7 +74,10 @@ export const fetchGenres = createAsyncThunk<string[], undefined>(
     try {
       const { data, error } = await supabase.rpc('get_unique_genres');
 
-      if (error) throw error;
+      if (error) {
+        toast.error(error.message);
+        throw error;
+      }
 
       return data.map((row) => row.genre);
     } catch (error) {
@@ -82,16 +86,21 @@ export const fetchGenres = createAsyncThunk<string[], undefined>(
   }
 );
 
-export const fetchAlbumById = createAsyncThunk<Album, string>(
+export const fetchAlbumById = createAsyncThunk<Album, string, { extra: Extra }>(
   'albums/id/fetch',
-  async (albumId) => {
+  async (albumId, {extra}) => {
     const { data, error } = await supabase
       .from(ALBUMS_TABLE)
       .select('*')
       .eq('id', albumId);
 
     if (error) {
+      toast.error(error.message);
       throw error;
+    }
+
+    if(data.length === 0){
+      extra.history.push(AppRoute.NotFound);
     }
 
     return data[0];
@@ -108,6 +117,7 @@ export const addAlbum = createAsyncThunk<
     .select();
 
   if (albumDownloadError) {
+    toast.error(albumDownloadError.message);
     throw albumDownloadError;
   }
 
@@ -123,10 +133,11 @@ export const addAlbum = createAsyncThunk<
       .list('', { search: cover.name });
 
     if (response.error) {
+      toast.error(response.error.message);
       throw response.error;
     }
   }
-
+  toast.success('Album  has been created');
   return album[0];
 });
 
@@ -140,9 +151,11 @@ export const updateAlbum = createAsyncThunk<
     .eq('id', id);
 
   if (error) {
+    toast.error(error.message);
     throw error;
   }
 
+  toast.success('Album has been updated');
   return data;
 });
 
@@ -170,6 +183,7 @@ export const fetchFilteredAlbums = createAsyncThunk<
   const response = await fetch;
 
   if (response.error) {
+    toast.error(response.error.message);
     throw response.error;
   }
 
@@ -189,7 +203,7 @@ export const deleteAlbum = createAsyncThunk<Album | null, string>(
       .eq('id', albumId);
 
     if (error) {
-      console.error('Ошибка при удалении:', error);
+      toast.error(error.message);
       throw error;
     }
 
@@ -225,10 +239,11 @@ export const registerUser = createAsyncThunk<
   });
 
   if (signupError) {
+    toast.error(signupError.message);
     throw signupError;
   }
 
-  const { data, error: insertError } = await supabase
+  const { error: insertError } = await supabase
     .from(PROFILES_TABLE)
     .insert({
       id: userData.user?.id,
@@ -239,11 +254,13 @@ export const registerUser = createAsyncThunk<
     })
 
   if (insertError) {
+    toast.error(insertError.message);
     throw insertError;
   }
 
   saveToken(userData.session?.access_token as string);
 
+  toast.success('User has been created');
   extra.history.push(AppRoute.Root);
 
   return null;
@@ -261,7 +278,7 @@ export const signIn = createAsyncThunk<
     });
 
   if (signInError) {
-    console.error('Ошибка при входе:', signInError.message);
+    toast.error(signInError.message);
     throw signInError;
   }
 
@@ -271,6 +288,7 @@ export const signIn = createAsyncThunk<
     .eq('id', userData.user.id);
 
   if (insertError) {
+    toast.error(insertError.message);
     throw insertError;
   }
 
@@ -285,6 +303,7 @@ export const signOut = createAsyncThunk<null, undefined>(
     const { error } = await supabase.auth.signOut();
 
     if (error) {
+      toast.error(error.message);
       throw error;
     }
     dropToken();
@@ -292,7 +311,7 @@ export const signOut = createAsyncThunk<null, undefined>(
   }
 );
 
-//ToDo: Перенести в типы
+
 type UploadURLType = {
   fullPath: string;
   id: string;
@@ -306,6 +325,7 @@ export const getUserStatus = createAsyncThunk<UserData, string>(
       await supabase.auth.getUser(accessToken);
 
     if (signError) {
+      toast.error(signError.message);
       throw signError;
     }
 
@@ -315,9 +335,10 @@ export const getUserStatus = createAsyncThunk<UserData, string>(
       .eq('id', userData.user.id);
 
     if (insertError) {
+      toast.error(insertError.message);
       throw insertError;
     }
-    console.log(data[0])
+
     return adaptUserDataToClient({...data[0], id: userData.user.id} as unknown as CreateUserDTO);
   }
 );
@@ -337,6 +358,7 @@ export const uploadFile = createAsyncThunk<UploadURLType, RcFile>(
         .list('', { search: file.name });
 
       if (response.error) {
+        toast.error(response.error.message);
         throw response.error;
       }
       console.log(response.data);
@@ -360,7 +382,10 @@ export const updateUserFavoritesList = createAsyncThunk<
     album_id: albumId,
   });
 
-  if (error) throw error;
+  if (error) {
+    toast.error(error.message);
+    throw error;
+  }
 
   return data;
 });

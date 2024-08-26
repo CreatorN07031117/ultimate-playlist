@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Tag } from "antd";
 
@@ -12,12 +12,14 @@ import type { State } from '../../types/state'
 import defaultCover from '../../assets/default-album-cover.jpg'
 
 import s from './album.module.css';
+import { AppRoute } from '../../const';
 
 
 
 
 const Album = () => {
   const params = useParams();
+  const navigate = useNavigate()
   const isAlbumLoading = useSelector((state: State) => state.SITE_PROCESS.isAlbumLoading)
   const dispatch = useDispatch<AppDispatch>();
 
@@ -32,6 +34,10 @@ const Album = () => {
 
   if (isAlbumLoading) {
     return <Loader />
+  }
+
+  if (album === undefined) {
+    navigate(`${AppRoute.NotFound}`);
   }
 
   return (
