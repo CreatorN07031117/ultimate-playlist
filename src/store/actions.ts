@@ -236,13 +236,14 @@ export const registerUser = createAsyncThunk<
       return rejectWithValue(signupError.message);
     }
 
-    const { error: insertError } = await supabase.from(PROFILES_TABLE).insert({
+    const { data, error: insertError } = await supabase.from(PROFILES_TABLE)
+    .insert({
       id: userData.user?.id,
       email: email,
       userType: 'user',
       name: name,
       favorites: [],
-    });
+    }).select();
 
     if (insertError) {
       toast.error(insertError.message);
@@ -252,8 +253,7 @@ export const registerUser = createAsyncThunk<
     saveToken(userData.session?.access_token as string);
 
     toast.success('User has been created');
-
-    return userData.user as unknown as UserData;
+    return adaptUserDataToClient({...data[0], id: userData.user?.id}as unknown as CreateUserDTO);;
   }
 );
 
@@ -261,7 +261,12 @@ export const signIn = createAsyncThunk<
   UserData,
   { email: string; password: string },
   { rejectValue: string; }
->('users/signIn', async ({ email, password }, { rejectWithValue }) => {
+>(
+  'users/signIn', 
+  async (
+    { email, password }, 
+    { rejectWithValue }
+  ) => {
   const { data: userData, error: signInError } =
     await supabase.auth.signInWithPassword({
       email: email,

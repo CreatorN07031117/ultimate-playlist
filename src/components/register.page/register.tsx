@@ -23,9 +23,7 @@ const Register = (): JSX.Element => {
     password: string;
     name: string;
 }) {
-    await dispatch(registerUser(values)).unwrap().then(
-      () => navigate(`${AppRoute.Root}`)
-    );
+    await dispatch(registerUser(values)).then(() => navigate(`${AppRoute.Root}`)).catch(() => {})
   };
 
   return (

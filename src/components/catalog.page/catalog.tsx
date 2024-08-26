@@ -9,8 +9,8 @@ import { Card } from '../card/card';
 import { Pagination } from '../pagination/pagination';
 import { Filters } from '../filters/filters';
 import { SearchInput } from '../search-input/search-input';
-import { getCurrentPage, getSortingType } from '../../store/site-process/site-process';
-import { fetchAlbumsForPage, fetchFilteredAlbums } from '../../store/actions';
+import { getCurrentPage, getSortingType, resetFilters } from '../../store/site-process/site-process';
+import { fetchAlbumsForPage, fetchFilteredAlbums, getAlbumsCount } from '../../store/actions';
 import store from '../../store/index';
 import type { Album } from '../../types/types';
 import type { AppDispatch, State } from '../../types/state';
@@ -25,7 +25,6 @@ const Catalog = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-
     const page = location.search.replace('?page=', '');
     const pageNumber = Number(page) > 0? Number(page) : 1;
 
@@ -42,6 +41,9 @@ const Catalog = (): JSX.Element => {
         sortingType,
       }));
     } else if(location.search === ''){
+      dispatch(getCurrentPage(1));
+      dispatch(resetFilters());
+      dispatch(getAlbumsCount());
       dispatch(fetchAlbumsForPage({
         pageNumber: 1,
         sortingType,
@@ -53,9 +55,7 @@ const Catalog = (): JSX.Element => {
         sortingType
       }));
     }
-  },[location.search, sortingType]);
-
-
+  },[dispatch, location.search, sortingType]);
 
   const handleSortingClick = ({ key }: MenuInfo) => {
     store.dispatch(getSortingType(key));
@@ -78,7 +78,7 @@ const Catalog = (): JSX.Element => {
   
   return (
   <div className={s.catalogWrapper}>
-    <h1 className={s.catalogHeader}>{`Albums${isFiltered ?  `: ${filters.genres}` : ''}`}</h1>
+    <h1 className={s.catalogHeader}>{`Albums${isFiltered ? `: ${filters.genres}` : ''}`}</h1>
     <div className={s.panelWrapper}>
       <Filters />
       <div className={s.sortingWrapper}>

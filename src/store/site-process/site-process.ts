@@ -31,6 +31,10 @@ export const siteProcess = createSlice({
     },
     getSortingType: (state, action) => {
       state.sortingType = action.payload;
+    },
+    resetFilters: (state) => {
+      state.isFiltered = false;
+      state.filters = {};
     }
   },
   extraReducers(builder) {
@@ -103,4 +107,4 @@ export const siteProcess = createSlice({
   }
 });
 
-export const { getCurrentPage, getSortingType } = siteProcess.actions;
+export const { getCurrentPage, getSortingType, resetFilters } = siteProcess.actions;
