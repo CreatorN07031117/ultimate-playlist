@@ -23,18 +23,19 @@ type Extra = {
   history: History;
 };
 
-export const getAlbumsCount = createAsyncThunk<number>(
-  'albums',
-  async () => {
+export const getAlbumsCount = createAsyncThunk<number, void, { rejectValue: string }>(
+  'albums/getCount',
+  async (_, { rejectWithValue }) => {
     const response = await supabase
       .from(ALBUMS_TABLE)
       .select('*', { count: 'exact', head: true });
 
     if (response.error) {
-      console.error('Error fetching row count:', response.error);
-      return;
+      toast.error(response.error.message);
+      return rejectWithValue('Failed to fetch album count');
     }
-    return response.count;
+
+    return response.count as number;
   }
 );
 
@@ -140,33 +141,29 @@ export const addAlbum = createAsyncThunk<
 });
 
 export const updateAlbum = createAsyncThunk<
-  Album,
+  Album[],
   { albumData: Album; id: string },
-  object
->('albums/update', async ({ albumData, id }) => {
+  { rejectValue: string }
+>('albums/update', async ({ albumData, id }, { rejectWithValue }) => {
   const { data, error } = await supabase
     .from(ALBUMS_TABLE)
     .update({ ...albumData })
-    .eq('id', id);
-
+    .eq('id', id)
+    .select();
   if (error) {
     toast.error(error.message);
-    throw error;
+    return rejectWithValue(error.message);
   }
 
   toast.success('Album has been updated');
-  return data;
+  return data as Album[];
 });
 
 export const fetchFilteredAlbums = createAsyncThunk<
-  {
-    albums: Album[];
-    rows: number;
-    filters: string;
-  },
+  { albums: Album[]; rows: number; filters: string },
   { genre: string; pageNumber: number; sortingType?: string },
-  object
->('albums/filtered', async ({ genre, pageNumber = 1, sortingType }) => {
+  { rejectValue: string }
+>('albums/filtered', async ({ genre, pageNumber = 1, sortingType }, { rejectWithValue }) => {
   const start = (pageNumber - 1) * ALBUMS_PER_PAGE;
   const end = start + ALBUMS_PER_PAGE - 1;
 
@@ -176,7 +173,7 @@ export const fetchFilteredAlbums = createAsyncThunk<
     .contains('genres', [genre])
     .range(start, end);
 
-  if (sortingType !== '') {
+  if (sortingType) {
     fetch = fetch.order('releaseDate', { ascending: sortingType === 'early' });
   }
 
@@ -184,12 +181,12 @@ export const fetchFilteredAlbums = createAsyncThunk<
 
   if (response.error) {
     toast.error(response.error.message);
-    throw response.error;
+    return rejectWithValue(response.error.message); 
   }
 
   return {
-    rows: response.count,
-    albums: response.data as Album[],
+    rows: response.count ?? 0,
+    albums: response.data as Album[], 
     filters: genre,
   };
 });
@@ -232,38 +229,47 @@ export const searchAlbums = createAsyncThunk<Album[], string, object>(
 export const registerUser = createAsyncThunk<
   UserData,
   { email: string; password: string; name: string },
-  { extra: Extra }
->('users/signUp', async ({ email, password, name }, { extra }) => {
-  const { data: userData, error: signupError } = await supabase.auth.signUp({
-    email,
-    password,
-  });
-
-  if (signupError) {
-    toast.error(signupError.message);
-    throw signupError;
+  {
+    extra: Extra;
+    rejectValue: string;
   }
+>(
+  'users/signUp',
+  async (
+    { email, password, name }, 
+    { extra, rejectWithValue }
+  ) => {
+    const { data: userData, error: signupError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
 
-  const { error: insertError } = await supabase.from(PROFILES_TABLE).insert({
-    id: userData.user?.id,
-    email: email,
-    userType: 'user',
-    name: name,
-    favorites: [],
-  });
+    if (signupError) {
+      toast.error(signupError.message);
+      return rejectWithValue(signupError.message);
+    }
 
-  if (insertError) {
-    toast.error(insertError.message);
-    throw insertError;
+    const { error: insertError } = await supabase.from(PROFILES_TABLE).insert({
+      id: userData.user?.id,
+      email: email,
+      userType: 'user',
+      name: name,
+      favorites: [],
+    });
+
+    if (insertError) {
+      toast.error(insertError.message);
+      return rejectWithValue(insertError.message);
+    }
+
+    saveToken(userData.session?.access_token as string);
+
+    toast.success('User has been created');
+    extra.history.push(AppRoute.Root);
+
+    return userData.user as unknown as UserData;
   }
-
-  saveToken(userData.session?.access_token as string);
-
-  toast.success('User has been created');
-  extra.history.push(AppRoute.Root);
-
-  return null;
-});
+);
 
 export const signIn = createAsyncThunk<
   UserData,
@@ -351,8 +357,10 @@ export const getUserStatus = createAsyncThunk<
 export const uploadFile = createAsyncThunk<
   UploadURLType,
   RcFile,
-  object
->('file/upload', async (file) => {
+  {
+    rejectValue: string;
+  }
+>('file/upload', async (file, { rejectWithValue }) => {
   const { data, error } = await supabase.storage
     .from(STORAGE)
     .upload(file.name, file, {
@@ -366,16 +374,16 @@ export const uploadFile = createAsyncThunk<
 
     if (response.error) {
       toast.error(response.error.message);
-      throw response.error;
+      return rejectWithValue(response.error.message);
     }
 
     return {
       id: response.data[0].id,
       name: response.data[0].name,
       fullPath: `${STORAGE}/${response.data[0].name}`,
-    };
+    } as unknown as UploadURLType;
   } else {
-    return data;
+    return data as UploadURLType;
   }
 });
 
