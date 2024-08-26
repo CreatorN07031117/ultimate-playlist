@@ -18,8 +18,7 @@ const Login = (): JSX.Element => {
   const navigate = useNavigate();
 
   async function handleFormSubmit (values: { email: string; password: string }) {
-    await dispatch(signIn(values));
-    navigate('/');
+    await dispatch(signIn(values)).then(() => navigate('/'))
   };
 
   return (

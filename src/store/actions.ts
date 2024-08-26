@@ -1,4 +1,3 @@
-import type { History } from 'history';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createClient } from '@supabase/supabase-js';
 import { RcFile } from 'antd/es/upload';
@@ -6,7 +5,7 @@ import { toast } from 'react-toastify';
 
 import { adaptUserDataToClient, CreateUserDTO } from '../adapters/adapters-to-client';
 import { dropToken, saveToken } from '../helpers/token-functions';
-import { ALBUMS_PER_PAGE, AppRoute } from '../const';
+import { ALBUMS_PER_PAGE } from '../const';
 import type { Album, UserData } from '../types/types';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -17,11 +16,6 @@ const PROFILES_TABLE = 'profiles';
 const STORAGE = 'cover_img';
 
 const supabase = createClient(SUPABASE_URL, ANON_KEY);
-
-type Extra = {
-  navigate(arg0: string): unknown;
-  history: History;
-};
 
 export const getAlbumsCount = createAsyncThunk<number, void, { rejectValue: string }>(
   'albums/getCount',
@@ -84,7 +78,7 @@ export const fetchGenres = createAsyncThunk<
   return data.map((row: {genre: 'string'}) => row.genre);
 });
 
-export const fetchAlbumById = createAsyncThunk<Album, string, { extra: Extra, rejectValue: string }>(
+export const fetchAlbumById = createAsyncThunk<Album, string, { rejectValue: string }>(
   'albums/id/fetch',
   async (albumId, { rejectWithValue }) => {
     const { data, error } = await supabase
@@ -225,15 +219,12 @@ export const searchAlbums = createAsyncThunk<Album[], string, object>(
 export const registerUser = createAsyncThunk<
   UserData,
   { email: string; password: string; name: string },
-  {
-    extra: Extra;
-    rejectValue: string;
-  }
+  { rejectValue: string; }
 >(
   'users/signUp',
   async (
     { email, password, name }, 
-    { extra, rejectWithValue }
+    { rejectWithValue }
   ) => {
     const { data: userData, error: signupError } = await supabase.auth.signUp({
       email,
@@ -261,7 +252,6 @@ export const registerUser = createAsyncThunk<
     saveToken(userData.session?.access_token as string);
 
     toast.success('User has been created');
-    extra.history.push(AppRoute.Root);
 
     return userData.user as unknown as UserData;
   }
@@ -270,8 +260,8 @@ export const registerUser = createAsyncThunk<
 export const signIn = createAsyncThunk<
   UserData,
   { email: string; password: string },
-  { extra: Extra }
->('users/signIn', async ({ email, password }, { extra }) => {
+  { rejectValue: string; }
+>('users/signIn', async ({ email, password }, { rejectWithValue }) => {
   const { data: userData, error: signInError } =
     await supabase.auth.signInWithPassword({
       email: email,
@@ -280,7 +270,7 @@ export const signIn = createAsyncThunk<
 
   if (signInError) {
     toast.error(signInError.message);
-    throw signInError;
+    return rejectWithValue(signInError.message);
   }
 
   const { data, error: insertError } = await supabase
@@ -290,10 +280,8 @@ export const signIn = createAsyncThunk<
 
   if (insertError) {
     toast.error(insertError.message);
-    throw insertError;
+    return rejectWithValue(insertError.message);
   }
-
-  extra.history.push(AppRoute.Root);
 
   return adaptUserDataToClient({
     ...data[0],
@@ -319,6 +307,7 @@ export const signOut = createAsyncThunk<
     return null;
   }
 );
+
 type UploadURLType = {
   fullPath: string;
   id: string;

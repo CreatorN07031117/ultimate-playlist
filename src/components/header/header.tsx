@@ -1,5 +1,5 @@
 import { useState, useLayoutEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link, Outlet } from 'react-router-dom';
 import { CloseOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
@@ -7,10 +7,10 @@ import classNames from 'classnames';
 import { signOut } from '../../store/actions';
 import { AppRoute, DESKTOP_WIDTH } from '../../const';
 import { UserType } from '../../types/enums';
-import type { State, User } from '../../types/state';
+import type { AppDispatch, State, User } from '../../types/state';
 import logo from '../../assets/logo.png';
 import s from './header.module.css';
-import { useDispatch } from 'react-redux';
+
 
 <MenuOutlined />;
 export const Header = () => {
@@ -18,7 +18,7 @@ export const Header = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < DESKTOP_WIDTH);
   const user: User = useSelector((state: State) => state.USER_DATA);
   const isAuthorized = user.authorizationStatus;
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useLayoutEffect(() => {
     const handleResize = () => {
@@ -32,7 +32,7 @@ export const Header = () => {
 
   function handleLogOut () {
     setIsOpen(false);
-    dispatch(signOut()).unwrap() ;
+    dispatch(signOut()) ;
   };
 
   return (

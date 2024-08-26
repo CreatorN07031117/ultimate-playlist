@@ -7,15 +7,11 @@ import { OptionsBtn } from '../options-btn/options-btn';
 import { Loader } from '../loader/loader';
 import { fetchAlbumById } from '../../store/actions';
 import { formatDate } from '../../helpers/format-date';
+import { AppRoute } from '../../const';
 import type { AppDispatch } from '../../types/types';
 import type { State } from '../../types/state'
 import defaultCover from '../../assets/default-album-cover.jpg'
-
 import s from './album.module.css';
-import { AppRoute } from '../../const';
-import store from '../../store';
-
-
 
 
 const Album = () => {
@@ -50,7 +46,7 @@ const Album = () => {
           <h1 className={s.albumTitle}>{album?.name}</h1>
           <div className={s.albumInfoWrapper}>
             <div className={s.songsInfo}><b>Duration:</b> {album?.qtySongs} songs</div>
-            <div className={s.releaseYear}><b>Release date:</b> {formatDate(new Date(album?.releaseDate))}</div>
+            <div className={s.releaseYear}><b>Release date:</b> {formatDate(new Date(album?.releaseDate as Date))}</div>
           </div>
           <div className={s.albumFormatWrapper}><b>Available formats:</b> {album?.format.map((format) => (<Tag>{format}</Tag>))}</div>
           <div className={s.descriptionWrapper}>
