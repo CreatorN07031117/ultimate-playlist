@@ -17,7 +17,6 @@ const store = configureStore({
 });
 
 const token = getToken();
-console.log(token)
 store.dispatch(getUserStatus(token));
 store.dispatch(getAlbumsCount());
 store.dispatch(fetchGenres());

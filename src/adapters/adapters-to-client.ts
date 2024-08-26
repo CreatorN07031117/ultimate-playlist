@@ -1,7 +1,7 @@
 import { UserType } from "../types/enums";
 import { UserData } from "../types/types";
 
-type CreateUserDTO = {
+export type CreateUserDTO = {
   email: string;
   favorites: string[];
   userType: UserType;

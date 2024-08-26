@@ -4,9 +4,8 @@ import { createClient } from '@supabase/supabase-js';
 import { RcFile } from 'antd/es/upload';
 import { toast } from 'react-toastify';
 
-import { adaptUserDataToClient } from '../adapters/adapters-to-client';
+import { adaptUserDataToClient, CreateUserDTO } from '../adapters/adapters-to-client';
 import { dropToken, saveToken } from '../helpers/token-functions';
-import { CreateUserDTO } from '../adapters/user.dto';
 import { ALBUMS_PER_PAGE, AppRoute } from '../const';
 import type { Album, UserData } from '../types/types';
 
@@ -24,7 +23,7 @@ type Extra = {
   history: History;
 };
 
-export const getAlbumsCount = createAsyncThunk<number, void>(
+export const getAlbumsCount = createAsyncThunk<number>(
   'albums',
   async () => {
     const response = await supabase
@@ -72,7 +71,7 @@ export const fetchAlbumsForPage = createAsyncThunk<
 export const fetchGenres = createAsyncThunk<
   string[],
   undefined,
-  { extra: Extra }
+  object
 >('genres/fetch', async () => {
   const { data, error: genresError } = await supabase.rpc('get_unique_genres');
 
@@ -81,7 +80,7 @@ export const fetchGenres = createAsyncThunk<
     throw genresError;
   }
 
-  return data.map((row: string) => row.genre);
+  return data.map((row: {genre: 'string'}) => row.genre);
 });
 
 export const fetchAlbumById = createAsyncThunk<Album, string, { extra: Extra }>(
@@ -143,7 +142,7 @@ export const addAlbum = createAsyncThunk<
 export const updateAlbum = createAsyncThunk<
   Album,
   { albumData: Album; id: string },
-  { extra: Extra }
+  object
 >('albums/update', async ({ albumData, id }) => {
   const { data, error } = await supabase
     .from(ALBUMS_TABLE)
@@ -166,7 +165,7 @@ export const fetchFilteredAlbums = createAsyncThunk<
     filters: string;
   },
   { genre: string; pageNumber: number; sortingType?: string },
-  { extra: Extra }
+  object
 >('albums/filtered', async ({ genre, pageNumber = 1, sortingType }) => {
   const start = (pageNumber - 1) * ALBUMS_PER_PAGE;
   const end = start + ALBUMS_PER_PAGE - 1;
@@ -198,7 +197,7 @@ export const fetchFilteredAlbums = createAsyncThunk<
 export const deleteAlbum = createAsyncThunk<
   Album | null,
   string,
-  { extra: Extra }
+  object
 >('albums/delete', async (albumId) => {
   const { data, error } = await supabase
     .from(ALBUMS_TABLE)
@@ -323,7 +322,7 @@ type UploadURLType = {
 export const getUserStatus = createAsyncThunk<
   UserData,
   string,
-  { extra: Extra }
+  object
 >('users/get', async (accessToken) => {
   const { data: userData, error: signError } =
     await supabase.auth.getUser(accessToken);
@@ -352,7 +351,7 @@ export const getUserStatus = createAsyncThunk<
 export const uploadFile = createAsyncThunk<
   UploadURLType,
   RcFile,
-  { extra: Extra }
+  object
 >('file/upload', async (file) => {
   const { data, error } = await supabase.storage
     .from(STORAGE)
@@ -369,7 +368,7 @@ export const uploadFile = createAsyncThunk<
       toast.error(response.error.message);
       throw response.error;
     }
-    console.log(response.data);
+
     return {
       id: response.data[0].id,
       name: response.data[0].name,
@@ -383,7 +382,7 @@ export const uploadFile = createAsyncThunk<
 export const updateUserFavoritesList = createAsyncThunk<
   string[],
   { albumId: string; userId: string },
-  { extra: Extra }
+  object
 >('users/updates', async ({ albumId, userId }) => {
   const { data, error } = await supabase.rpc('toggle_favorite_album', {
     user_id: userId,
