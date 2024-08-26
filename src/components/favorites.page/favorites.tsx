@@ -45,7 +45,7 @@ const Favorites = (): JSX.Element => {
             ))}
           </div>
         ) : (
-          'No albums have been added to favorites yet'
+          <div className={s.text}>No albums have been added to favorites yet</div>
         )}
       </div>
     </div>

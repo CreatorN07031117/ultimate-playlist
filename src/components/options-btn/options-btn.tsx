@@ -18,6 +18,7 @@ export const OptionsBtn = (props: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const user: User = useSelector((state: State) => state.USER_DATA);
+  const currentUrl = window.location.pathname;
 
   async function clickFavoriteBtnHandler (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, userId: string, albumId: string) {
     event.preventDefault();
@@ -44,6 +45,9 @@ export const OptionsBtn = (props: Props) => {
     if (result === null) {
       window.alert('Ошибка при удалении');
     } else {
+      if (currentUrl.includes(`${AppRoute.Album}/`)) {
+        navigate(`${AppRoute.Root}`);
+      }
       window.alert(`Альбом id ${id} удален`);
     }
   }
@@ -56,7 +60,7 @@ export const OptionsBtn = (props: Props) => {
 
   return (
     <div className={s.options} data-custom={props.option}>
-      <button className={s.favoriteBtn} onClick={(event) => clickFavoriteBtnHandler(event, 'a9ac38f3-dbc1-46e4-bc06-11c4c3b3528e', props.albumId)}>
+      <button className={s.favoriteBtn} onClick={(event) => clickFavoriteBtnHandler(event, String(user.user?.id), props.albumId)}>
         {isFavorite ? <HeartFilled className={s.btnIconFilled} /> 
         : <HeartOutlined className={s.btnIcon} />
         }

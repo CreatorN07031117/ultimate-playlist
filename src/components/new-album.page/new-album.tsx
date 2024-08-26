@@ -8,31 +8,27 @@ import {
   DatePicker,
   InputNumber,
   Upload,
-  Alert,
 } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { RcFile } from 'antd/es/upload';
-import { UploadOutlined } from '@ant-design/icons';
+import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
 
 import { Loader } from '../loader/loader';
-import { uploadFile, addAlbum } from '../../store/actions';
+import { addAlbum } from '../../store/actions';
+import type { Album as AlbumType } from '../../types/types';
 import type { AppDispatch, State } from '../../types/state';
 import { AlbumFormat } from '../../types/enums';
 import s from './new-album.module.css';
-
-type UploadURLType = {
-  fullPath: string;
-  id: string;
-  path: string;
-};
+import { useNavigate } from 'react-router-dom';
 
 const NewAlbum = (): JSX.Element => {
   const [form] = Form.useForm();
-  const [uploadStatus, setUploadStatus] = useState('prepared');
   const [uploadUrl, setUploadUrl] = useState<null | string>(null);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [cover, setCover] = useState<File | undefined>();
 
   const genres = useSelector((state: State) => state.SITE_PROCESS.genres);
+  const navigate = useNavigate();
 
   const genreOptions =
     genres.length > 0 &&
@@ -47,19 +43,33 @@ const NewAlbum = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  async function handleFormSubmit(values) {
+  async function handleFormSubmit(values: AlbumType) {
+    setIsLoading(true);
     const newAlbum = {
       ...values,
-      coverImg: `https://nfejynuraifmrtmngcaa.supabase.co/storage/v1/object/public/${uploadUrl}`,
-      description: [values.description],
+      coverImg: `https://nfejynuraifmrtmngcaa.supabase.co/storage/v1/object/public/cover_img/${uploadUrl}`,
+      description: String(values.description).split('\n'),
     };
-    await dispatch(addAlbum(newAlbum)).unwrap();
+
+    const result = await dispatch(
+      addAlbum({ albumData: newAlbum, cover: cover as File })
+    ).unwrap();
+    if (result) {
+      navigate(`/album/${result.id}`);
+    }
+    setIsLoading(false);
   }
 
-  async function handleBeforeUpload(file: RcFile) {
-    const signedUrl: UploadURLType = await dispatch(uploadFile(file)).unwrap();
-    setUploadUrl(signedUrl.fullPath);
+  function handleBeforeUpload(file: RcFile) {
+    setCover(file);
+    setUploadUrl(String(file?.name));
     return false;
+  }
+
+  function handleRemove() {
+    setCover(undefined);
+    setUploadUrl(null);
+    return true;
   }
 
   if (genres.length === 0) {
@@ -119,6 +129,7 @@ const NewAlbum = (): JSX.Element => {
                 action={uploadUrl as unknown as string}
                 method="PUT"
                 beforeUpload={handleBeforeUpload}
+                onRemove={handleRemove}
                 onChange={({ file }) => {
                   if (file.status === 'done') {
                     console.log('File uploaded successfully');
@@ -127,9 +138,12 @@ const NewAlbum = (): JSX.Element => {
                   }
                 }}
               >
-                {uploadStatus === 'prepared' && (
-                  <Button icon={<UploadOutlined />}>Upload</Button>
-                )}
+                <Button
+                  icon={<UploadOutlined />}
+                  disabled={cover !== undefined}
+                >
+                  Upload
+                </Button>
               </Upload>
             </Form.Item>
             <label>Description</label>
@@ -147,6 +161,15 @@ const NewAlbum = (): JSX.Element => {
               Create new album
             </Button>
           </Form>
+          {isLoading && (
+            <div className={s.loadingScreen}>
+              <div className={s.loadingIcon}>
+                <LoadingOutlined
+                  className={s.loading}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

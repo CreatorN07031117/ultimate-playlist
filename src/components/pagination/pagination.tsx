@@ -25,8 +25,6 @@ export const Pagination = () => {
     dispatch(getCurrentPage(item));
   };
 
-  console.log(currentPage)
-
   return (
     pages > 1 && (
       <div className={s.pagination}>

@@ -7,6 +7,7 @@
 }
 
 .catalogWrapper {
+  min-height: calc(100vh - 380px);
   margin-bottom: 10px;
 
   @media(min-width: 1200px) {
@@ -23,6 +24,14 @@
     grid-template-columns: 250px 250px 250px 250px;
     grid-auto-rows: 1fr;
     gap: 20px;
+  }
+}
+
+.text {
+  padding: 0 20px;
+
+  @media(min-width: 1200px) {
+    padding: 0;
   }
 }
 

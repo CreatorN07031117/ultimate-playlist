@@ -21,6 +21,7 @@ const Register = (): JSX.Element => {
 
   const handleFormSubmit = (values) => {
     dispatch(registerUser(values));
+    navigate(`${AppRoute.Root}`);
   };
 
   return (

@@ -19,6 +19,7 @@ const STORAGE = 'cover_img';
 const supabase = createClient(SUPABASE_URL, ANON_KEY);
 
 type Extra = {
+  navigate(arg0: string): unknown;
   history: History;
 };
 
@@ -97,22 +98,37 @@ export const fetchAlbumById = createAsyncThunk<Album, string>(
   }
 );
 
-export const addAlbum = createAsyncThunk<Album, Album, { extra: Extra }>(
-  'albums/add',
-  async (albumData: Album, { extra }) => {
-    const { data, error } = await supabase
-      .from(ALBUMS_TABLE)
-      .insert(albumData)
-      .select();
+export const addAlbum = createAsyncThunk<
+  Album,
+  { albumData: Album; cover: File }
+>('albums/add', async ({ albumData, cover }) => {
+  const { data: album, error: albumDownloadError } = await supabase
+    .from(ALBUMS_TABLE)
+    .insert(albumData)
+    .select();
 
-    if (error) {
-      throw error;
-    }
-
-    extra.history.push(`${AppRoute.Album}/${data[0].id}`);
-    return;
+  if (albumDownloadError) {
+    throw albumDownloadError;
   }
-);
+
+  const fileResponse = await supabase.storage
+    .from(STORAGE)
+    .upload(cover.name, cover, {
+      contentType: 'image/jpeg',
+    });
+
+  if (fileResponse.error) {
+    const response = await supabase.storage
+      .from(STORAGE)
+      .list('', { search: cover.name });
+
+    if (response.error) {
+      throw response.error;
+    }
+  }
+
+  return album[0];
+});
 
 export const updateAlbum = createAsyncThunk<
   Album,
@@ -220,7 +236,7 @@ export const registerUser = createAsyncThunk<
       userType: 'user',
       name: name,
       favorites: [],
-    });
+    })
 
   if (insertError) {
     throw insertError;
@@ -230,7 +246,7 @@ export const registerUser = createAsyncThunk<
 
   extra.history.push(AppRoute.Root);
 
-  return adaptUserDataToClient(data as unknown as CreateUserDTO);
+  return null;
 });
 
 export const signIn = createAsyncThunk<
@@ -260,7 +276,7 @@ export const signIn = createAsyncThunk<
 
   extra.history.push(AppRoute.Root);
 
-  return adaptUserDataToClient(data[0] as unknown as CreateUserDTO);
+  return adaptUserDataToClient({...data[0], id: userData.user.id} as unknown as CreateUserDTO);
 });
 
 export const signOut = createAsyncThunk<null, undefined>(
@@ -292,6 +308,7 @@ export const getUserStatus = createAsyncThunk<UserData, string>(
     if (signError) {
       throw signError;
     }
+
     const { data, error: insertError } = await supabase
       .from(PROFILES_TABLE)
       .select('*')
@@ -300,8 +317,8 @@ export const getUserStatus = createAsyncThunk<UserData, string>(
     if (insertError) {
       throw insertError;
     }
-
-    return adaptUserDataToClient(data[0] as unknown as CreateUserDTO);
+    console.log(data[0])
+    return adaptUserDataToClient({...data[0], id: userData.user.id} as unknown as CreateUserDTO);
   }
 );
 
@@ -315,7 +332,19 @@ export const uploadFile = createAsyncThunk<UploadURLType, RcFile>(
       });
 
     if (error) {
-      console.error(error.message);
+      const response = await supabase.storage
+        .from(STORAGE)
+        .list('', { search: file.name });
+
+      if (response.error) {
+        throw response.error;
+      }
+      console.log(response.data);
+      return {
+        id: response.data[0].id,
+        name: response.data[0].name,
+        fullPath: `${STORAGE}/${response.data[0].name}`,
+      };
     } else {
       return data;
     }

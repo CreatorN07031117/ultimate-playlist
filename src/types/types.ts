@@ -15,6 +15,7 @@ export type Album = {
 };
 
 export type UserData = {
+  id: string;
   name: string;
   email: string;
   type: UserType;
