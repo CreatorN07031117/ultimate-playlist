@@ -1,5 +1,14 @@
-import { CreateUserDTO } from "./user.dto";
+import { UserType } from "../types/enums";
 import { UserData } from "../types/types";
+
+type CreateUserDTO = {
+  email: string;
+  favorites: string[];
+  userType: UserType;
+  name: string;
+  created_at: string;
+  id: string;
+}
 
 export function adaptUserDataToClient (user: CreateUserDTO):UserData {
   return {
