@@ -15,7 +15,7 @@ const ALBUMS_TABLE = 'albums';
 const PROFILES_TABLE = 'profiles';
 const STORAGE = 'cover_img';
 
-const supabase = createClient(SUPABASE_URL, ANON_KEY);
+const supabase = createClient(SUPABASE_URL as string, ANON_KEY as string);
 
 export const getAlbumsCount = createAsyncThunk<number, void, { rejectValue: string }>(
   'albums/getCount',
