@@ -8,8 +8,8 @@ import { dropToken, saveToken } from '../helpers/token-functions';
 import { ALBUMS_PER_PAGE } from '../const';
 import type { Album, UserData } from '../types/types';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
+const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY;
 
 const ALBUMS_TABLE = 'albums';
 const PROFILES_TABLE = 'profiles';
