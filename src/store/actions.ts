@@ -104,8 +104,8 @@ export const fetchAlbumById = createAsyncThunk<Album, string, { extra: Extra, re
 export const addAlbum = createAsyncThunk<
   Album,
   { albumData: Album; cover: File },
-  { extra: Extra }
->('albums/add', async ({ albumData, cover }) => {
+  { rejectValue: string }
+>('albums/add', async ({ albumData, cover }, { rejectWithValue }) => {
   const { data: album, error: albumDownloadError } = await supabase
     .from(ALBUMS_TABLE)
     .insert(albumData)
@@ -113,7 +113,7 @@ export const addAlbum = createAsyncThunk<
 
   if (albumDownloadError) {
     toast.error(albumDownloadError.message);
-    throw albumDownloadError;
+    return rejectWithValue(albumDownloadError.message);
   }
 
   const fileResponse = await supabase.storage
@@ -129,7 +129,7 @@ export const addAlbum = createAsyncThunk<
 
     if (response.error) {
       toast.error(response.error.message);
-      throw response.error;
+      return rejectWithValue(response.error.message);
     }
   }
   toast.success('Album  has been created');
