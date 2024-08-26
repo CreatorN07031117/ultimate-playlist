@@ -323,7 +323,7 @@ export const getUserStatus = createAsyncThunk<
     await supabase.auth.getUser(accessToken);
 
   if (signError) {
-    toast.error(signError.message);
+
     throw signError;
   }
 
@@ -333,7 +333,7 @@ export const getUserStatus = createAsyncThunk<
     .eq('id', userData.user.id);
 
   if (insertError) {
-    toast.error(insertError.message);
+
     throw insertError;
   }
 

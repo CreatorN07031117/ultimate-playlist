@@ -1,5 +1,9 @@
 @import url('../style-const.css');
 
+main {
+  min-height: calc(100vh - 190px);
+}
+
 .loginWrapper {
   width: 100vw;
   box-sizing: border-box;
