@@ -212,7 +212,7 @@ export const deleteAlbum = createAsyncThunk<
   return data;
 });
 
-export const searchAlbums = createAsyncThunk<Album[], string, { extra: Extra }>(
+export const searchAlbums = createAsyncThunk<Album[], string, object>(
   'albums/search',
   async (searchTerm) => {
     const { data, error } = await supabase

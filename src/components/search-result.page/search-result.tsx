@@ -15,13 +15,13 @@ export const SearchResult = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
-  const searchText = searchParams.get('search_text');
+  const searchTerm = searchParams.get('search_text');
 
   useEffect(() => {
     const fetchData = async () => {
-      if (searchText !== null) {
+      if (searchTerm !== null) {
         try {
-          const result = await dispatch(searchAlbums(searchText)).unwrap();
+          const result = await dispatch(searchAlbums(searchTerm)).unwrap();
           if (result) {
             setSearchResult(result);
           }
@@ -47,12 +47,12 @@ export const SearchResult = () => {
       <div className={s.searchInput}>
         <Search
           placeholder="input search text"
-          defaultValue={String(searchText)}
+          defaultValue={String(searchTerm)}
           onSearch={onSearch}
           allowClear
         />
       </div>
-      {searchText === '' && searchResult.length > 0 && (
+      {searchTerm === '' && searchResult.length > 0 && (
         <div className={s.textResult}>Enter the name of the group or album</div>
       )}
       <div className={s.resultWrapper}>
