@@ -111,7 +111,10 @@ const NewAlbum = (): JSX.Element => {
             <label>Genres:</label>
             <Form.Item name="genres">
               <Checkbox.Group
-                options={genreOptions}
+                options={genreOptions  as {
+                  label: string;
+                  value: string;
+                }[]}
                 defaultValue={['Music genre']}
               />
             </Form.Item>
