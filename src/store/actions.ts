@@ -47,8 +47,8 @@ interface FetchAlbumsArgs {
 export const fetchAlbumsForPage = createAsyncThunk<
   Album[],
   FetchAlbumsArgs,
-  { extra: Extra }
->('albums/fetch', async ({ pageNumber = 1, sortingType }: FetchAlbumsArgs) => {
+  { rejectValue: string }
+>('albums/fetch', async ({ pageNumber = 1, sortingType }, { rejectWithValue }) => {
   const start = (pageNumber - 1) * ALBUMS_PER_PAGE;
   const end = start + ALBUMS_PER_PAGE - 1;
 
@@ -64,7 +64,7 @@ export const fetchAlbumsForPage = createAsyncThunk<
 
   if (error) {
     toast.error(error.message);
-    throw error;
+    return rejectWithValue('Failed to fetch albums');
   }
   return data as Album[];
 });
@@ -84,9 +84,9 @@ export const fetchGenres = createAsyncThunk<
   return data.map((row: {genre: 'string'}) => row.genre);
 });
 
-export const fetchAlbumById = createAsyncThunk<Album, string, { extra: Extra }>(
+export const fetchAlbumById = createAsyncThunk<Album, string, { extra: Extra, rejectValue: string }>(
   'albums/id/fetch',
-  async (albumId, { extra }) => {
+  async (albumId, { rejectWithValue }) => {
     const { data, error } = await supabase
       .from(ALBUMS_TABLE)
       .select('*')
@@ -94,11 +94,7 @@ export const fetchAlbumById = createAsyncThunk<Album, string, { extra: Extra }>(
 
     if (error) {
       toast.error(error.message);
-      throw error;
-    }
-
-    if (data.length === 0) {
-      extra.history.push(AppRoute.NotFound);
+      return rejectWithValue('Failed to fetch album');
     }
 
     return data[0];

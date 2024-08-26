@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Dropdown, Space } from "antd";
 import { DownOutlined } from '@ant-design/icons';
+import { MenuInfo } from 'rc-menu/lib/interface';
 
 import { Card } from '../card/card';
 import { Pagination } from '../pagination/pagination';
@@ -56,7 +57,7 @@ const Catalog = (): JSX.Element => {
 
 
 
-  const handleSortingClick = ({key}) => {
+  const handleSortingClick = ({ key }: MenuInfo) => {
     store.dispatch(getSortingType(key));
   }
 
@@ -88,7 +89,7 @@ const Catalog = (): JSX.Element => {
               items,
               onClick: handleSortingClick,
             }}
-        >
+          >
           <a onClick={(e) => e.preventDefault()}>
             <Space>
               Sorted {sortingType !== '' && `: ${items[items.findIndex((i) => i.key === sortingType)].text}`}

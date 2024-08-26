@@ -24,7 +24,6 @@ import { IMG_UPLOAD_URL } from '../../const';
 import s from './edit-album.module.css';
 import { Album } from '../../types/types';
 
-
 type UploadURLType = {
   fullPath: string;
   id: string;
@@ -48,7 +47,7 @@ const EditAlbum = (): JSX.Element => {
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchAlbumById(String(id)));
+      dispatch(fetchAlbumById(id));
     }
   }, [dispatch, id]);
 
@@ -88,7 +87,7 @@ const EditAlbum = (): JSX.Element => {
   async function handleBeforeUpload(file: RcFile) {
     setUploadStatus('loading');
     const signedUrl: UploadURLType = await dispatch(uploadFile(file)).unwrap();
-    console.log(signedUrl)
+    console.log(signedUrl);
     setUploadUrl(signedUrl.fullPath);
     setUploadStatus('loaded');
     return false;
@@ -141,7 +140,14 @@ const EditAlbum = (): JSX.Element => {
             </Form.Item>
             <label>Genres:</label>
             <Form.Item name="genres">
-              <Checkbox.Group options={genreOptions} />
+              <Checkbox.Group
+                options={
+                  genreOptions as {
+                    label: string;
+                    value: string;
+                  }[]
+                }
+              />
             </Form.Item>
             <label>Release Date</label>
             <Form.Item name="releaseDate">
@@ -167,18 +173,18 @@ const EditAlbum = (): JSX.Element => {
                   },
                 ]}
               >
-                  <Button
-                    icon={
-                      uploadStatus === 'loading' ? (
-                        <LoadingOutlined />
-                      ) : (
-                        <UploadOutlined />
-                      )
-                    }
-                    disabled={uploadStatus !== 'prepared'}
-                  >
-                    Upload
-                  </Button>
+                <Button
+                  icon={
+                    uploadStatus === 'loading' ? (
+                      <LoadingOutlined />
+                    ) : (
+                      <UploadOutlined />
+                    )
+                  }
+                  disabled={uploadStatus !== 'prepared'}
+                >
+                  Upload
+                </Button>
               </Upload>
             </Form.Item>
             <label>Description</label>
@@ -196,9 +202,7 @@ const EditAlbum = (): JSX.Element => {
           {isLoading && (
             <div className={s.loadingScreen}>
               <div className={s.loadingIcon}>
-                <LoadingOutlined
-                  className={s.loading}
-                />
+                <LoadingOutlined className={s.loading} />
               </div>
             </div>
           )}
