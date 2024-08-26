@@ -48,7 +48,7 @@ const EditAlbum = (): JSX.Element => {
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchAlbumById(id));
+      dispatch(fetchAlbumById(String(id)));
     }
   }, [dispatch, id]);
 
@@ -102,7 +102,6 @@ const EditAlbum = (): JSX.Element => {
     <div className={s.root}>
       {errorMessage && <Alert message={errorMessage} type="error" />}
       <div className={s.albumWrapper}>
-        {console.log(uploadUrl)}
         <h1>
           Edit album: {albumState.name} | {albumState.musician}
         </h1>

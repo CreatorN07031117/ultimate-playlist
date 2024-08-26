@@ -1,6 +1,6 @@
 import { UserType } from "../types/enums";
 
-export class CreateUserDTO {
+export type CreateUserDTO = {
   email: string;
   favorites: string[];
   userType: UserType;

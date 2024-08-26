@@ -8,7 +8,7 @@ export const SearchInput = () => {
   const { Search } = Input;
   const navigate = useNavigate();
 
-  const onSearch = (value) => {
+  const onSearch = (value: string) => {
     const searchParams = new URLSearchParams({"search_text" : value}).toString();
     console.log(searchParams)
     navigate(`${AppRoute.Search}?${searchParams}`);
