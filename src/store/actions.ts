@@ -8,14 +8,14 @@ import { dropToken, saveToken } from '../helpers/token-functions';
 import { ALBUMS_PER_PAGE } from '../const';
 import type { Album, UserData } from '../types/types';
 
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
-const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 const ALBUMS_TABLE = 'albums';
 const PROFILES_TABLE = 'profiles';
 const STORAGE = 'cover_img';
 
-const supabase = createClient(SUPABASE_URL as string, ANON_KEY as string);
+const supabase = createClient(SUPABASE_URL, ANON_KEY);
 
 export const getAlbumsCount = createAsyncThunk<number, void, { rejectValue: string }>(
   'albums/getCount',
