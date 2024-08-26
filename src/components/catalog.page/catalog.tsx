@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Dropdown, Space } from "antd";
 import { DownOutlined } from '@ant-design/icons';
@@ -12,7 +12,7 @@ import { getCurrentPage, getSortingType } from '../../store/site-process/site-pr
 import { fetchAlbumsForPage, fetchFilteredAlbums } from '../../store/actions';
 import store from '../../store/index';
 import type { Album } from '../../types/types';
-import type { State } from '../../types/state';
+import type { AppDispatch, State } from '../../types/state';
 import s from './catalog.module.css';
 import { Loader } from '../loader/loader';
 
@@ -21,6 +21,7 @@ const Catalog = (): JSX.Element => {
   const {isFiltered, filters, albums} = useSelector((state:State) => state.SITE_PROCESS);
   const sortingType = useSelector((state:State) => state.SITE_PROCESS.sortingType);
   const location = useLocation();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
 
@@ -34,24 +35,19 @@ const Catalog = (): JSX.Element => {
       const filters = {
         genre: genre ? decodeURIComponent(genre.replace(/\+/g, ' ')) : null,
       };
-      console.log(store.dispatch(fetchFilteredAlbums({
-        genre: filters.genre as string,
-        pageNumber: filterPage? parseInt(filterPage, 10) : 1,
-        sortingType,
-      })))
-      store.dispatch(fetchFilteredAlbums({
+      dispatch(fetchFilteredAlbums({
         genre: filters.genre as string,
         pageNumber: filterPage? parseInt(filterPage, 10) : 1,
         sortingType,
       }));
     } else if(location.search === ''){
-      store.dispatch(fetchAlbumsForPage({
+      dispatch(fetchAlbumsForPage({
         pageNumber: 1,
         sortingType
       }));
     } else {
-      store.dispatch(getCurrentPage(page))
-      store.dispatch(fetchAlbumsForPage({
+      dispatch(getCurrentPage(page))
+      dispatch(fetchAlbumsForPage({
         pageNumber: pageNumber,
         sortingType
       }));

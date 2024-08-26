@@ -1,7 +1,7 @@
 export function formatDate (date: Date) {
   let day = String(date.getDate());
   let month =  String(date.getMonth() + 1);
-  let year =  String(date.getFullYear());
+  const year =  String(date.getFullYear());
 
   if (Number(day) < 10) {
     day = '0' + day;

@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { fetchFilteredAlbums } from '../../store/actions';
 import type { AppDispatch, State } from '../../types/state';

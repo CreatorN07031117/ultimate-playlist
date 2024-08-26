@@ -21,7 +21,10 @@ export const Card = ({album}: Props) => {
             src={album.coverImg}
             alt={`Album's cover "${album.name}"`}
             width="200" height="200"
-            onError={(e) => e.target.src = defaultCover}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = defaultCover;
+            }}
           />
         </div>
       </Link>

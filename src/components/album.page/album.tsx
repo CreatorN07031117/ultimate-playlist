@@ -13,6 +13,7 @@ import defaultCover from '../../assets/default-album-cover.jpg'
 
 import s from './album.module.css';
 import { AppRoute } from '../../const';
+import store from '../../store';
 
 
 
@@ -26,7 +27,7 @@ const Album = () => {
   useEffect(() => {
     const { id } = params;
     if (id) {
-      dispatch(fetchAlbumById(id));
+      dispatch(fetchAlbumById(String(id)));
     }
   }, [params, dispatch]);
 
@@ -64,7 +65,10 @@ const Album = () => {
             className={s.albumCover}
             src={album?.coverImg}
             alt={`Album's cover "${album?.name}"`}
-            onError={(e) => e.target.src = defaultCover} 
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = defaultCover;
+            }}
           />
         </div>
       </div>

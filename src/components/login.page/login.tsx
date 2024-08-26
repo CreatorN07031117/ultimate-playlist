@@ -1,6 +1,5 @@
-import * as React from 'react';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Input, Form, Button } from 'antd';
 import {
   EyeInvisibleOutlined,
@@ -18,7 +17,7 @@ const Login = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const handleFormSubmit = (values) => {
+  const handleFormSubmit = (values: { email: string; password: string }) => {
     dispatch(signIn(values));
     navigate('/');
   };
