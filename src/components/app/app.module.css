@@ -6,10 +6,6 @@
   box-sizing: border-box;
 }
 
-main {
-  min-height: calc(100vh - 190px);
-}
-
 .logo {
   height: 6em;
   padding: 1.5em;

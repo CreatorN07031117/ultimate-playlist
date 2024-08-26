@@ -1,12 +1,10 @@
 @import url('../style-const.css');
 
-main {
-  min-height: calc(100vh - 190px);
-}
-
 .loginWrapper {
   width: 100vw;
+  height: auto;
   box-sizing: border-box;
+  margin-bottom: 20px;
 }
 
 .loginSection {
