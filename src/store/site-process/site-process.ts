@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import { Album } from '../../types/types';
 import { StoreSlice } from '../../types/enums';
-import { deleteAlbum, fetchAlbumById, fetchAlbumsForPage, fetchFilteredAlbums, fetchGenres, getAlbumsCount, searchAlbums,  } from '../actions';
+import { addAlbum, deleteAlbum, fetchAlbumById, fetchAlbumsForPage, fetchFilteredAlbums, fetchGenres, getAlbumsCount, searchAlbums, updateAlbum,  } from '../actions';
 import type { SiteProcess } from '../../types/state';
 import { ALBUMS_PER_PAGE } from '../../const';
 
@@ -103,6 +103,14 @@ export const siteProcess = createSlice({
       })
       .addCase(searchAlbums.rejected, (state) => {
         state.isAlbumsLoading = false;
+      })
+      .addCase(addAlbum.fulfilled, (state) => {
+        state.album = null;
+        state.isAlbumLoading = false;
+      })
+      .addCase(updateAlbum.fulfilled, (state) => {
+        state.album = null;
+        state.isAlbumLoading = false;
       })
   }
 });

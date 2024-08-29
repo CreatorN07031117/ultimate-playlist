@@ -34,7 +34,6 @@ const EditAlbum = (): JSX.Element => {
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const albumState = useSelector((state: State) => state.SITE_PROCESS.album);
   const genres = useSelector((state: State) => state.SITE_PROCESS.genres);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -44,12 +43,18 @@ const EditAlbum = (): JSX.Element => {
   >('loaded');
   const [uploadUrl, setUploadUrl] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [albumState, setAlbumState] = useState<Album | null>(null);
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchAlbumById(id));
+      dispatch(fetchAlbumById(id))
+      .then(
+        (data) => {
+          setAlbumState(data.payload as Album);
+        }
+      );
     }
-  }, [dispatch, id]);
+  }, []);
 
   const genreOptions =
     genres.length > 0 &&
@@ -65,7 +70,7 @@ const EditAlbum = (): JSX.Element => {
     const albumData = {
       ...values,
       coverImg: `https://nfejynuraifmrtmngcaa.supabase.co/storage/v1/object/public/${uploadUrl}`,
-      description: [...values.description],
+      description: String(values.description).split('\n'),
     };
     const result = await dispatch(
       updateAlbum({ albumData: albumData, id: id as string })
@@ -93,7 +98,7 @@ const EditAlbum = (): JSX.Element => {
     return false;
   }
 
-  if (!albumState || genres.length === 0) {
+  if (!albumState || genres.length === 0 ) {
     return <Loader />;
   }
 

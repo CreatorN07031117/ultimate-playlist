@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect } from 'react';
+import { useState, useLayoutEffect, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, Outlet } from 'react-router-dom';
 import { CloseOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
@@ -19,6 +19,21 @@ export const Header = () => {
   const user: User = useSelector((state: State) => state.USER_DATA);
   const isAuthorized = user.authorizationStatus;
   const dispatch = useDispatch<AppDispatch>();
+
+  const navRef = useRef<HTMLDivElement | null>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (navRef.current && !navRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const handleResize = () => {
@@ -61,7 +76,14 @@ export const Header = () => {
            )
           }
         </div>
-        <nav className={classNames(s.headerNavWrapper, isMobile && isAuthorized && s.mobileNavWrapper, isMobile && isAuthorized &&!isOpen && s.headerNavHidden)}>
+        <nav 
+          ref={navRef}
+          className={classNames(
+            s.headerNavWrapper,
+            isMobile && isAuthorized && s.mobileNavWrapper,
+            isMobile && isAuthorized &&!isOpen && s.headerNavHidden
+          )}
+        >
           <ul className={s.headerNavList}>
             {isAuthorized === 'AUTH' ? (
               <>
